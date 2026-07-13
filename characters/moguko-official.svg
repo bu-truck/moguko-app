@@ -1,0 +1,26 @@
+<svg width="680" height="540" viewBox="0 0 680 540" role="img" xmlns="http://www.w3.org/2000/svg"><title>クロワッサンモグ子（公式デザイン）</title>
+
+<g stroke="#a34c12" stroke-width="4"><path d="M310,462 L310,494 Q310,500 318,500 L324,500 Q330,500 330,494 L330,464 Z" fill="#c07a3a"/><path d="M350,464 L350,494 Q350,500 358,500 L364,500 Q370,500 370,494 L370,462 Z" fill="#c07a3a"/></g>
+<ellipse cx="317" cy="506" rx="18" ry="10" fill="#8f5a2b" stroke="#5f3a15" stroke-width="4"/>
+<ellipse cx="363" cy="506" rx="18" ry="10" fill="#8f5a2b" stroke="#5f3a15" stroke-width="4"/>
+
+<path d="M296,352 Q290,360 276,398 Q262,440 268,462 Q290,472 316,468 Q340,478 364,468 Q390,472 412,462 Q418,440 404,398 Q390,360 384,352 Q340,372 296,352 Z" fill="#f9c3d3" stroke="#a34c12" stroke-width="5" stroke-linejoin="round"/>
+<path d="M300,350 Q340,370 380,350 Q382,338 340,340 Q298,338 300,350 Z" fill="#fff6ee" stroke="#a34c12" stroke-width="4" stroke-linejoin="round"/>
+<circle cx="340" cy="396" r="8" fill="#f7d84a" stroke="#a34c12" stroke-width="4"/>
+<circle cx="340" cy="424" r="8" fill="#f7d84a" stroke="#a34c12" stroke-width="4"/>
+
+<path d="M118,288 Q92,268 100,240 Q108,212 134,204 Q142,168 186,150 Q210,112 258,102 Q288,70 340,70 Q392,70 422,102 Q470,112 494,150 Q538,168 546,204 Q572,212 580,240 Q588,268 562,288 Q540,312 500,310 Q460,332 400,334 Q370,338 340,338 Q310,338 280,334 Q220,332 180,310 Q140,312 118,288 Z" fill="#f2992e" stroke="#a34c12" stroke-width="7" stroke-linejoin="round"/>
+<g fill="none" stroke="#a34c12" stroke-width="5" stroke-linecap="round"><path d="M134,206 Q160,250 172,306"/><path d="M188,152 Q216,220 224,320"/><path d="M258,104 Q282,180 284,330"/><path d="M546,206 Q520,250 508,306"/><path d="M492,152 Q464,220 456,320"/><path d="M422,104 Q398,180 396,330"/></g>
+<g fill="none" stroke="#f8c777" stroke-width="9" stroke-linecap="round" opacity="0.9"><path d="M302,90 Q340,82 378,90"/><path d="M228,128 Q248,116 268,112"/><path d="M412,112 Q432,116 452,128"/><path d="M120,244 Q124,226 138,218"/><path d="M560,244 Q556,226 542,218"/></g>
+
+<g transform="translate(310,192)"><path d="M-38,-26 Q-26,-40 -8,-32 L-11,-25 Q-24,-31 -33,-20 Z" fill="#3f2408"/><circle cx="0" cy="0" r="17" fill="#2e7de0" stroke="#3f2408" stroke-width="5"/><circle cx="-4" cy="-4" r="7" fill="#ffe22e"/><circle cx="6" cy="6" r="4" fill="#ffe22e"/></g>
+<g transform="translate(370,192)"><path d="M-38,-26 Q-26,-40 -8,-32 L-11,-25 Q-24,-31 -33,-20 Z" fill="#3f2408"/><circle cx="0" cy="0" r="17" fill="#2e7de0" stroke="#3f2408" stroke-width="5"/><circle cx="-4" cy="-4" r="7" fill="#ffe22e"/><circle cx="6" cy="6" r="4" fill="#ffe22e"/></g>
+<circle cx="272" cy="224" r="10" fill="#f29a90" opacity="0.85"/>
+<circle cx="408" cy="224" r="10" fill="#f29a90" opacity="0.85"/>
+<path d="M326,228 Q333,236 340,228 Q347,236 354,228" fill="none" stroke="#3f2408" stroke-width="5" stroke-linecap="round"/>
+
+<path d="M300,362 Q272,352 258,326 Q252,314 264,307 Q280,302 291,317 Q301,336 310,356 Z" fill="#f9c3d3" stroke="#a34c12" stroke-width="5" stroke-linejoin="round"/>
+<path d="M246,302 Q238,286 252,279 Q256,268 268,274 Q283,278 279,296 Q273,311 258,309 Q249,308 246,302 Z" fill="#f5b054" stroke="#a34c12" stroke-width="4" stroke-linejoin="round"/>
+<path d="M384,360 Q404,368 414,392 Q420,410 410,417 Q398,421 390,406 Q382,388 376,364 Z" fill="#f9c3d3" stroke="#a34c12" stroke-width="5" stroke-linejoin="round"/>
+<path d="M404,418 Q399,434 412,439 Q417,446 427,440 Q437,433 430,421 Q423,411 412,414 Z" fill="#f5b054" stroke="#a34c12" stroke-width="4" stroke-linejoin="round"/>
+</svg>
