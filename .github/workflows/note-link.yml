@@ -1,0 +1,58 @@
+name: Noteリンク自動設定
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  issues: write
+jobs:
+  update:
+    if: github.event.issue.user.login == github.repository_owner && startsWith(github.event.issue.title, 'note ')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: characters.jsonを更新
+        env:
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, re, sys
+          t = os.environ['TITLE'].strip()
+          m = re.match(r'note\s+(\S+)\s+(https://note\.com/\S+)', t)
+          if not m:
+              open('result.txt','w').write('タイトルの形式が読めませんでした。「note おでん https://note.com/〜」の形でお願いね。')
+              sys.exit(0)
+          key, url = m.group(1), m.group(2)
+          chars = json.load(open('data/characters.json', encoding='utf-8'))
+          lst = chars if isinstance(chars, list) else chars.get('characters')
+          hit = None
+          for c in lst:
+              if c.get('id') == key or c.get('name') == key:
+                  hit = c; break
+          if not hit:
+              open('result.txt','w').write(f'「{key}」が図鑑に見つかりませんでした。名前（例: おでん）かid（例: oden）を確認してね。')
+              sys.exit(0)
+          hit['note'] = url
+          json.dump(chars, open('data/characters.json','w',encoding='utf-8'), ensure_ascii=False, indent=1)
+          open('result.txt','w').write(f'{hit.get("name")} モグ子にNoteリンクを設定したわ。1〜2分でアプリに反映されるわよ。\n{url}')
+          open('ok.txt','w').write('1')
+          EOF
+      - name: 自動Commit＆Push
+        run: |
+          if [ -f ok.txt ]; then
+            git config user.name "moguko-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add data/characters.json
+            git commit -m "Noteリンク自動設定"
+            git push
+          fi
+      - name: 結果を返信してIssueを閉じる
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('result.txt', 'utf8');
+            await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+            if (fs.existsSync('ok.txt')) {
+              await github.rest.issues.update({ ...context.repo, issue_number: context.issue.number, state: 'closed' });
+            }
