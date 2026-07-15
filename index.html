@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>モグ子ずかん｜毎日1回、焼きたての出会い</title>
+<title>モグ子ずかん｜冷蔵庫の中に、こんなに知り合いがいたなんて。</title>
+<meta name="description" content="冷蔵庫の中に、こんなに知り合いがいたなんて。食べものモグ子たちと暮らす、毎日ちょっと健康になれる図鑑アプリ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#aed136">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap');
@@ -23,7 +27,9 @@ body{
 header{padding:22px 18px 12px;display:flex;align-items:center;gap:10px}
 header .logo{font-size:29px;cursor:pointer;transition:.2s}
 header .logo:active{transform:scale(1.18) rotate(-8deg)}
-header h1{font-size:17px;letter-spacing:.08em;font-weight:900}
+header h1{font-size:17px;letter-spacing:.08em;font-weight:900;font-family:"Yusei Magic","Zen Maru Gothic",sans-serif}
+header .copy{font-size:10.5px;color:var(--brown2);margin-top:4px;letter-spacing:.04em}
+.card h2,nav button,.reveal h3{font-family:"Yusei Magic","Zen Maru Gothic",sans-serif}
 header h1::after{content:"";display:block;height:6px;margin-top:-8px;border-radius:3px;background:linear-gradient(90deg,rgba(243,155,59,.35),rgba(169,201,63,.35))}
 header .days{margin-left:auto;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:6px 14px;font-size:11.5px;box-shadow:var(--shadow);font-weight:700}
 header .days b{color:var(--orange-d);font-size:16px}
@@ -48,8 +54,9 @@ main{padding:0 16px}
 #tab-kiroku .card:nth-of-type(2) h2{background:var(--lime)}
 #tab-kiroku .card:nth-of-type(3) h2{background:var(--orange)}
 #tab-kiroku .card:nth-of-type(4) h2{background:var(--blue)}
-#tab-kiroku .card:nth-of-type(5) h2{background:var(--brown2)}
-#tab-kiroku .card:nth-of-type(6) h2{background:var(--gold);color:var(--brown)}
+#tab-kiroku .card:nth-of-type(5) h2{background:var(--pink)}
+#tab-kiroku .card:nth-of-type(6) h2{background:var(--brown2)}
+#tab-kiroku .card:nth-of-type(7) h2{background:var(--gold);color:var(--brown)}
 #shinbunCard{background:#FFFDF6}
 .qword{font-size:15.5px;font-weight:700;margin-bottom:12px}
 .mk{background:linear-gradient(transparent 62%, rgba(247,214,92,.5) 62%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
@@ -98,6 +105,27 @@ main{padding:0 16px}
 .sheet .kata{text-align:center;font-size:12px;color:var(--brown2);margin-bottom:14px}
 .rirekisho{border-top:1.5px dashed var(--line);padding:11px 2px;font-size:13px;display:flex;gap:10px}
 .rirekisho b{flex:none;width:58px;color:var(--lime-d);font-size:12px}
+.medals{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:2px 0 4px}
+.medal{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:5px 11px;font-size:11.5px;font-weight:900;color:#fff}
+.shake{margin-top:16px}
+.shake-h{font-size:12.5px;font-weight:900;color:var(--brown);display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.shake-h::before{content:"🤝";font-size:15px}
+.partner{display:flex;align-items:center;gap:10px;padding:9px;border:1.5px solid var(--line);border-radius:14px;margin-bottom:8px;background:var(--cream);cursor:pointer;transition:.15s;text-align:left;width:100%;font-family:inherit}
+.partner:hover{border-color:var(--orange);transform:translateY(-1px)}
+.partner img,.partner .pf{width:44px;height:44px;flex:none;border-radius:10px;object-fit:cover;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
+.partner .pt{flex:1;min-width:0}
+.partner .pn{font-size:12.5px;font-weight:900;color:var(--brown)}
+.partner .pe{font-size:11px;color:var(--brown2);line-height:1.5;margin-top:2px}
+.partner .ptag{flex:none;font-size:15px}
+.sbook{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sb{position:relative;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:9px 3px 7px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit}
+.sb:hover{border-color:var(--orange);transform:translateY(-1px);box-shadow:var(--shadow)}
+.sb .du{display:block;font-size:18px;letter-spacing:1px}
+.sb .nm{display:block;font-size:9px;color:var(--brown2);font-weight:700;margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb .tg{position:absolute;top:-7px;right:-5px;font-size:11px;background:var(--card);border:1.5px solid var(--line);border-radius:50%;width:21px;height:21px;display:flex;align-items:center;justify-content:center}
+.sb.mist{background:transparent;border-style:dashed}
+.sb.mist .du{filter:grayscale(1);opacity:.35}
+.sb.found{border-color:var(--lime);background:linear-gradient(180deg,#fdfff4,#f4f9e3)}
 .sheet a.note{display:block;text-align:center;margin-top:16px;background:var(--orange);color:#fff;font-weight:900;font-size:14px;text-decoration:none;border-radius:999px;padding:12px;box-shadow:0 3px 0 var(--orange-d)}
 .sheet .close{position:sticky;top:0;float:right;border:none;background:var(--card);border-radius:50%;width:34px;height:34px;font-size:15px;color:var(--brown2);cursor:pointer;box-shadow:var(--shadow)}
 nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:480px;width:100%;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-top:1.5px solid var(--line);display:flex;z-index:10;padding:4px 0 calc(4px + env(safe-area-inset-bottom))}
@@ -117,7 +145,7 @@ footer{padding:28px 18px 10px;font-size:10.5px;color:var(--brown2);text-align:ce
 <body>
 <header>
   <span class="logo">🥐</span>
-  <h1>モグ子ずかん</h1>
+  <div><h1>モグ子ずかん</h1><div class="copy">冷蔵庫の中に、こんなに知り合いがいたなんて。</div></div>
   <div class="days" style="text-align:center;line-height:1.3">もぐもぐ <b id="streak">0</b> 日目<div id="dangoRow" style="font-size:11px;letter-spacing:1px"></div></div>
 </header>
 
@@ -194,6 +222,13 @@ footer{padding:28px 18px 10px;font-size:10.5px;color:var(--brown2);text-align:ce
       </div>
       <button class="big-btn" id="logBtn">モグ子に報告する</button>
       <div class="fun" id="mealReact"></div>
+    </div>
+    <div class="card" id="shakeBookCard" style="display:none">
+      <h2 style="display:flex;align-items:center;justify-content:space-between">🤝 握手帳
+        <button id="shakeInfoBtn" style="border:2px solid var(--line);background:var(--cream);border-radius:50%;width:26px;height:26px;font-size:13px;color:var(--brown2);cursor:pointer;font-weight:900;font-family:inherit">?</button></h2>
+      <p style="font-size:12px;color:var(--brown2);margin:0 0 10px">一緒に食べると力を貸し合う、相性のいい二人の記録帳よ。ごはん報告にその二人が並んだら、ここに灯るの。</p>
+      <div class="sbook" id="shakeBook"></div>
+      <p id="shakeSum" style="font-size:11px;color:var(--brown2);margin-top:10px;text-align:center"></p>
     </div>
     <div class="card">
       <h2>🍞 この一週間の焼き色</h2>
@@ -272,7 +307,37 @@ const CHAYA_STORIES=[
   {t:"雨の日の村",s:"雨の日、村のみんなは意外とうれしそうなの。乾物のみなさんは屋根の下でお茶会、お野菜のみなさんは畑の里帰り気分。……傘を忘れたわたしは、麩菓子さんの下で雨宿りしたわ。大きいのよ、あの子。"},
   {t:"蔵の番人",s:"あなたの団子が貯まっていくあの蔵、実は番人がいるの。ねずみ……じゃなくて、おこげさん。焦げてるから夜でも見つからないんですって。本人は誇らしげよ。"},
   {t:"クロワッサンの三日月",s:"わたしの形が三日月なのはね、諸説あるけど、わたしは「食べた人の夜を照らすため」って説を推してるの。……自分で言ってて、ちょっと照れるけど。"},
-  {t:"村いちばんの早起き",s:"村でいちばんの早起きは、なっとうさん。夜のうちにこっそり糸を張って、朝日を絡めとるのが日課なんですって。……嘘みたいでしょ。わたしも半分疑ってるわ。"}
+  {t:"村いちばんの早起き",s:"村でいちばんの早起きは、なっとうさん。夜のうちにこっそり糸を張って、朝日を絡めとるのが日課なんですって。……嘘みたいでしょ。わたしも半分疑ってるわ。"},
+  {t:"三時の鐘",s:"村の時計台、三時の鐘だけ音がまろやかなの。鐘つき係がバターさんだから。夏はとろけて鐘が四時にずれるけど、誰も怒らないわ。おやつが遅れる理由としては、満点でしょ。"},
+  {t:"だし湯の長湯",s:"村の銭湯「だし湯」はね、おでんのみなさんの社交場なの。だいこんさんなんて、しみしみになるまで出てこないのよ。番台のこんぶさんいわく「うちは湯もおいしい」ですって。……飲まないでね。"},
+  {t:"床屋のもこもこ",s:"床屋のカリフラワーさん、パーマが得意なの。この前ブロッコリーさんが「イメチェンしたい」って来たけど、仕上がりはいつも通りのもこもこ。ふたりとも満足そうだったから、それでいいのよ。"},
+  {t:"こんにゃくさんの貫禄",s:"こんにゃくさんがね、「ほぼ水分なのに、なぜか堂々として見られる」って首をかしげてたの。おでん鍋で味がしみるまで動じない、あの姿勢のせいね。中身より、居ずまいなのよ。結局。"},
+  {t:"アルデンテ検定",s:"村には「アルデンテ検定」があるの。試験官はパスタさん。合格基準は「芯をほんの少し残す勇気」ですって。やわらかくゆだった受験生たちは、今年もそろって追試らしいわ。……やさしい試験官なのよ、何度でも待つの。"},
+  {t:"うめぼしさんの天気予報",s:"村の天気予報係はうめぼしさん。しわの寄り方で雨がわかるんですって。的中率は村いちばん。外れた日は「今日は酸っぱさの調整日」って言うの。……予報士って、言葉が上手よね。"},
+  {t:"写真館のつやつや組",s:"村の写真館でいちばん写りがいいのは、いくらさんたち。つやつや組は照明いらずなの。わたし? わたしの焼き色は加工なしよ。……ええ、そこだけは譲れないの。"},
+  {t:"ポップコーンさんの特技",s:"ポップコーンさんは驚くと跳ねるの。この前、村の会議で全員が一斉にくしゃみをしたら、天井まで跳ねて拍手喝采。本人は「不本意な芸」って言ってたけど、まんざらでもない顔だったわ。"},
+  {t:"図書館のしおり係",s:"村の図書館のしおりは、のりさんの一族が務めているの。薄くてぴったりだから。ただ、湿気た日は本のページと仲良くなりすぎるのが玉にきず。……この村、読書の秋に乾燥剤が売れるのよ。"},
+  {t:"ふとん屋の約束",s:"ふとん屋のマシュマロさんのお店、寝心地は最高なんだけど、入り口にひとつだけ約束が貼ってあるの。「寝る前に、店主を食べないこと」。……これまでに破ったお客が、三人いるらしいわ。"},
+  {t:"おやつ300円問題",s:"村の遠足には「おやつは300円まで」の掟があるの。毎年もめるのは「バナナさんはおやつか」問題。今年は本人が「わたしは主食のつもりで生きてる」って立候補して、会議は白紙に戻ったわ。……本人の意思が、いちばん強いのよ。"},
+  {t:"村役場の印鑑",s:"村役場の書類にぽんぽん押されてる丸い判、あれ、れんこんさんなの。穴の並びがひとりひとり違うから、偽造できないんですって。……村でいちばん忙しい公務員は、たぶんあの子よ。"},
+  {t:"村の名探偵",s:"村の探偵事務所の所長は、いかさん。犯人を追いつめると興奮して、墨で現場が真っ黒になるの。だから事件はぜんぶ解決してるのに、証拠がひとつも残ってないのよ。……名探偵の条件って、何かしらね。"},
+  {t:"駅伝のアンカー",s:"村の駅伝、アンカーはいつも、とろろさん。速くはないの。でも、たすきが肩から絶対に滑り落ちないの。「粘りだけで任されてる」って本人は謙遜するけど……それがいちばん難しいのよね。"},
+  {t:"お花見の複雑な立場",s:"お花見の名所は、村はずれの桜並木。毎年いちばん複雑な顔をしてるのは、さくらもちさんよ。「花見に来たのか、里帰りなのか、自分でもわからない」って。……葉っぱの香りが、ちょっと湿っぽかったわ。"},
+  {t:"冬の停電の夜",s:"冬に一度、村が停電したの。真っ先に集会所に呼ばれたのは、発酵組のみなさん。ぬかどこさん、こうじさん、なっとうさん。じんわりあったかいのよ、あの人たち。……電気より頼りになる夜も、あるのね。"},
+  {t:"井戸端のわらびもちさん",s:"井戸端会議の常連、わらびもちさんはね、話を聞きながらずっとぷるぷる震えてるの。だからみんな「そうよね、わかるわよね」って相槌をもらった気になるの。……本人は、ただの体質だって言ってるけど。"},
+  {t:"迷路大会の王者",s:"秋の迷路大会、三連覇中なのはちくわさん。コツを聞いたら「先の見通しがきくから」ですって。体の真ん中の穴をのぞきながら歩く姿、望遠鏡みたいでちょっと格好いいのよ。……真似した麩さんは、壁にぶつかってたわ。"},
+  {t:"しっぽの中身",s:"村の宝くじ売り場は、たいやきさんのお店の隣なの。「しっぽまであんこが入ってた日は当たり日」というジンクスがあるのよ。ちなみにその日は、だいたい店主の機嫌がいい日と一致するの。……世の中、そういうものよね。"},
+  {t:"合唱団のラムネさん",s:"合唱団のラムネさん、声がしゅわしゅわ震えるからソロはいつも遠慮してるの。でも夏の野外コンサートだけは主役よ。あの声、風鈴と夕立の間みたいで、村じゅうが静かになるの。……ビー玉の音は、内緒のアンコールね。"},
+  {t:"村長はだれ?",s:"この村の村長、実はずっと空席なの。選挙のたびに全員が「あなたのほうが向いてるわ」って譲り合って、結局そのまま。困りごとは井戸端会議で解決しちゃうし。……平和って、案外そういう形をしてるのかもね。"},
+  {t:"カラオケ大会の伝説",s:"村のカラオケ大会で毎年最下位なのに、毎年アンコールがかかるのが、するめさん。一回目は「うーん」なんだけど、聞けば聞くほど味が出るの。……審査員泣かせよね。点数のつけ方が、わからないんですもの。"},
+  {t:"冬支度の仕立て屋",s:"冬になると、はくさいさんの仕立て屋が繁盛するの。一枚ずつ重ねる「九十六枚仕立て」のコートが名物よ。脱ぐのが大変じゃないかって? ええ。だから村の冬のあいさつは「いま何枚目?」なのよ。"},
+  {t:"デッサン教室",s:"村の絵画教室では、消しゴムの代わりにパンを使うの。本格派の道具なのよ。ただ、いちばん前の席の食パンさんが毎回そわそわしてるの。「指名されたらどうしよう」って。……されないわよ。たぶん。"},
+  {t:"節分の夜",s:"節分の夜、村の大豆一族はちょっと複雑なの。投げられる側ですもの。でもね、豆まき担当のおじいさんが毎年「今年もよろしく頼むよ」って頭を下げてから投げるの。……役目って、そうやって引き受けるものなのね。"},
+  {t:"夜まわり当番",s:"村の夜まわりは、目玉焼きさんの担当。「目がいいから」という理由で任命されて、もう何年にもなるわ。本人いわく「実は半熟だから、夜はとろとろに眠い」んですって。……それでも回ってくれてるの。ありがたいわね。"},
+  {t:"美術館の名画",s:"村の美術館の目玉は、名画「もなか・リザ」。あの微笑みの中身は粒あんか、こしあんか。村を二分する論争に、館長は「割って確かめたら芸術じゃなくなる」って。……粋なこと言うのよ、あの最中。"},
+  {t:"お正月のあと",s:"松の内が明けるとね、鏡餅さんたちが一斉に里帰りするの。「飾られる仕事」から「食べられる仕事」への転職シーズンよ。おしるこ行き、お雑煮行き、揚げ餅行き。……行き先はどこでも、ちゃんと二度目の花道なの。"},
+  {t:"村の消防団",s:"村の消防団の団長は、ところてんさん。突き出される勢いで放水するの。副団長はとうがらしさんで、こちらは主に「火の用心」の声が大きい係よ。……適材適所って言葉、この村のためにあると思うの。"},
+  {t:"パン屋の定休日",s:"村のパン屋には定休日がないの。「休むと村の朝が始まらないから」ですって。その代わり、年に一度だけ「窯の誕生日」があって、その日はみんなでパンを持ち寄って、窯に食べさせるまねをするのよ。……窯がいちばん照れてるわ。"}
 ];
 function openChaya(){
   const left=dangoLeft(); S.heard=S.heard||[];
@@ -417,7 +482,7 @@ loadData.then(([chars,lt,...qs])=>{
   save();
   document.getElementById('streak').textContent=S.days.length;
   setAva('mogAva','normal'); setAva('mogAva2','normal');
-  renderGreet(); renderShinbun(); renderPostbox(); renderQuiz(); renderCats(); renderGrid(); renderLogs(); renderTable(); renderInvite();
+  renderGreet(); renderShinbun(); renderPostbox(); renderQuiz(); renderCats(); renderGrid(); renderLogs(); renderTable(); renderInvite(); renderShakeBook();
   /* 初回だけ: お近づきのきびだんご（桃太郎と同じ手口） */
   if(!S.gift && S.unlocked.length===0 && CHARS.find(c=>c.id==='kibidango')){
     S.gift=1; S.unlocked.push('kibidango');
@@ -631,11 +696,17 @@ function openSheet(id){
     const m=meetMap()[c.name];
     const meetRow=m?`<div class="rirekisho" style="background:#fdf6e3;border-radius:10px;border-top:none;margin-top:8px"><b>思い出</b><span>あなたの食卓に <b style="color:var(--orange-d)">${m.count}回</b> 来てくれたわ。最後に会ったのは${daysAgo(m.last)}${m.first?`。初めての日は ${m.first}`:''}</span></div>`
       :`<div class="rirekisho" style="border-top:none;margin-top:8px"><b>思い出</b><span style="color:var(--brown2)">あなたの食卓には、まだ来たことがないみたい。いつか会えるかしら。</span></div>`;
+    const medals=medalsOf(id);
+    const medalRow=medals.length?`<div class="medals">${medals.map(m=>`<span class="medal" style="background:${MEDAL_INFO[m][1]}">${m} ${MEDAL_INFO[m][0]}</span>`).join('')}</div>`:'';
+    const partners=partnersOf(id);
+    const shakeRow=partners.length?`<div class="shake"><div class="shake-h">相性のいい子（握手）</div>${partners.map(pt=>{const pc=CHARS.find(x=>x.id===pt.pid)||{};return `<button class="partner" onclick="openSheet('${pt.pid}')">${pc.thumb?`<img src="${pc.thumb}" onerror="this.outerHTML='<span class=pf>${pc.emoji||'🍞'}</span>'">`:`<span class="pf">${pc.emoji||'🍞'}</span>`}<span class="pt"><span class="pn">${pc.name||''} モグ子</span><span class="pe">${pt.effect}</span></span><span class="ptag">${pt.tag}</span></button>`}).join('')}</div>`:'';
     sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
       ${c.thumb?`<img class="art" src="${c.thumb}" onerror="this.outerHTML='<span class=face>${c.emoji||'🍞'}</span>'">`:`<span class="face">${c.emoji||'🍞'}</span>`}
       <h3>${c.name} モグ子</h3><p class="kata">${c.katagaki||''}</p>
+      ${medalRow}
       ${rows}
       ${meetRow}
+      ${shakeRow}
       ${(LETTERS[id]&&S.letterRead&&S.letterRead[id])?`<button class="choice" style="text-align:center;margin-top:14px" onclick="openLetter('${id}')">💌 おてがみを読み返す</button>`:''}
       ${c.note?`<a class="note" href="${c.note}" target="_blank" rel="noopener">📖 Noteで物語をぜんぶ読む</a>`
         :`<p style="text-align:center;font-size:11.5px;color:var(--brown2);margin-top:14px">この子の物語は、Noteで公開準備中よ。<br>公開されたら、ここから読めるようになるわ。</p>
@@ -882,14 +953,30 @@ document.getElementById('logBtn').onclick=()=>{
   /* キャラ照合（名前がテキストに含まれるか） */
   const hitChar=CHARS.find(c=>c.name && c.name.length>=2 && txt.includes(c.name));
   const newG=[...groupsOf(txt)];
+  /* 握手検出: 報告の中に相性ペアの二人がそろっていたら発火 */
+  let shakeMsg='';
+  const shakeHits=(PAIRS.pairs||[]).map(p=>{
+    const ca=CHARS.find(x=>x.id===p.a), cb=CHARS.find(x=>x.id===p.b);
+    return (ca&&cb&&ca.name&&cb.name&&txt.includes(ca.name)&&txt.includes(cb.name))?{p,ca,cb}:null;
+  }).filter(Boolean);
+  if(shakeHits.length){
+    S.shake=S.shake||{};
+    /* その報告に含まれる握手は全部記録（日付は初発見日を残す） */
+    const newKeys=[];
+    shakeHits.forEach(({p})=>{const k=p.a+'__'+p.b; if(!S.shake[k]){S.shake[k]=today(); newKeys.push(k);}});
+    save();
+    const {p,ca,cb}=shakeHits[0];
+    const first=newKeys.includes(p.a+'__'+p.b);
+    shakeMsg=`<div style="margin-top:8px;padding:9px 12px;background:#F4F9E3;border:1.5px solid var(--lime);border-radius:12px;font-size:11.5px;line-height:1.6">🤝 <b>${first?'はじめての握手!':'握手!'}</b> ${ca.name}さんと${cb.name}さんが、あなたの体の中で手をつないだわ。<br><span style="color:var(--brown2)">${p.effect}</span>${first?`<br><span style="font-size:11px;color:var(--lime-d);font-weight:700">下の握手帳に、書き留めておいたわ ✦</span>`:''}${shakeHits.length>1?`<br><span style="font-size:11px;color:var(--brown2)">今夜はもうひと組、手をつないでいたみたい。握手帳をのぞいてみて。</span>`:''}</div>`;
+  }
   const react=document.getElementById('mealReact');
   const mainLine=hitChar?meetLine(hitChar.name,(meetMap()[hitChar.name]||{count:1}).count):pick(MEAL_REACT,'mreact');
-  react.innerHTML=`${mogTag('happy')}<div>${mainLine}${newG.length?`<br><span style="font-size:11.5px;color:var(--green-d)">スタンプ帳に ${newG.map(g=>'「'+G_INFO[g][0]+'・'+G_INFO[g][2]+'」').join('')} が灯ったわ ✦</span>`:''}${hitChar&&hitChar.note?`<br><a href="${hitChar.note}" target="_blank" rel="noopener" style="font-size:11.5px;color:var(--orange-d);font-weight:700">📖 食べた子の物語を読む（Note）</a>`:''}</div>`;
+  react.innerHTML=`${mogTag('happy')}<div>${mainLine}${newG.length?`<br><span style="font-size:11.5px;color:var(--green-d)">スタンプ帳に ${newG.map(g=>'「'+G_INFO[g][0]+'・'+G_INFO[g][2]+'」').join('')} が灯ったわ ✦</span>`:''}${shakeMsg}${hitChar&&hitChar.note?`<br><a href="${hitChar.note}" target="_blank" rel="noopener" style="font-size:11.5px;color:var(--orange-d);font-weight:700">📖 食べた子の物語を読む（Note）</a>`:''}</div>`;
   react.classList.add('on');
   setAva('mogAva2','happy'); setTimeout(()=>setAva('mogAva2','normal'),3000);
   toast(`${SLOT_INFO[curSlot]} ${curSlot}の席に着いたわ ✓`);
   document.getElementById('mealText').value='';
-  renderLogs(); renderTable(); renderInvite();
+  renderLogs(); renderTable(); renderInvite(); renderShakeBook();
 };
 function renderLogs(){
   const el=document.getElementById('logList'); if(!el)return;
@@ -916,6 +1003,80 @@ document.getElementById('impBtn').onclick=()=>{
 /* ============ ベーカリーヴィル朝刊（毎朝1本・その日限り） ============ */
 let SHINBUN=null;
 fetch('data/shinbun.json').then(r=>r.json()).then(d=>{SHINBUN=window.EMBED_SHINBUN||d;renderShinbun();}).catch(()=>{SHINBUN=window.EMBED_SHINBUN||null;renderShinbun();});
+/* ===== 握手（ペア）データ ===== */
+let PAIRS={medal:{},pairs:[]};
+const MEDAL_INFO={'👁':['目にいい','#8FC3DC'],'🧠':['頭にいい','#F39B3B'],'💪':['筋肉にいい','#A9C93F'],'🌱':['心にいい','#F5A8B8']};
+fetch('data/pairs.json').then(r=>r.json()).then(d=>{PAIRS=window.EMBED_PAIRS||d;renderShakeBook();}).catch(()=>{PAIRS=window.EMBED_PAIRS||{medal:{},pairs:[]};renderShakeBook();});
+function medalsOf(id){return (PAIRS.medal&&PAIRS.medal[id])||[];}
+function partnersOf(id){return (PAIRS.pairs||[]).filter(p=>p.a===id||p.b===id).map(p=>({pid:p.a===id?p.b:p.a,tag:p.tag,effect:p.effect,line:p.line}));}
+/* ===== 握手帳（フェーズ3: 発見したペアの記録帳） ===== */
+const emo=t=>t==='👁'?'👁️':t; /* 目の絵文字はカラー表示を強制（環境により白黒の細い目になるため） */
+function renderShakeBook(){
+  const el=document.getElementById('shakeBook'); if(!el)return;
+  const card=document.getElementById('shakeBookCard');
+  const pairs=PAIRS.pairs||[];
+  if(!pairs.length||!CHARS.length){card.style.display='none';return;}
+  card.style.display='';
+  S.shake=S.shake||{};
+  const order={'👁':0,'🧠':1,'💪':2,'🌱':3};
+  const sorted=pairs.slice().sort((x,y)=>(order[x.tag]??9)-(order[y.tag]??9));
+  el.innerHTML=sorted.map(p=>{
+    const key=p.a+'__'+p.b, found=!!S.shake[key];
+    const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
+    return `<button class="sb ${found?'found':'mist'}" data-k="${key}"><span class="tg">${emo(p.tag)}</span><span class="du">${found?(ca.emoji||'🍞')+'🤝'+(cb.emoji||'🍞'):'？🤝？'}</span><span class="nm">${found?`${ca.name||''}×${cb.name||''}`:'？？？'}</span></button>`;
+  }).join('');
+  el.querySelectorAll('.sb').forEach(b=>b.onclick=()=>openShakeSheet(b.dataset.k));
+  const n=pairs.filter(p=>S.shake[p.a+'__'+p.b]).length;
+  document.getElementById('shakeSum').textContent =
+    n===0 ? `みつけた握手 0／${pairs.length}。最初のひと組は、案外ふつうの晩ごはんから生まれるのよ。`
+    : n===pairs.length ? `みつけた握手 ${n}／${pairs.length}。全部そろったわ。あなたの食卓、村で表彰ものよ。`
+    : `みつけた握手 ${n}／${pairs.length}`;
+}
+function openShakeSheet(key){
+  const p=(PAIRS.pairs||[]).find(x=>x.a+'__'+x.b===key); if(!p)return;
+  const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
+  const found=S.shake&&S.shake[key];
+  const sheet=document.getElementById('sheet');
+  if(!found){
+    const known=[ca,cb].filter(c=>c.id&&S.unlocked.includes(c.id));
+    const hint=known.length
+      ? `片方は、<b>${known[0].name}さん</b>。お相手は、いつかの食卓で会えてからのお楽しみ。`
+      : `二人とも、まだ内緒。ずかんの仲間が増えた頃、また聞きに来て。`;
+    sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
+      <span class="face" style="filter:grayscale(1);opacity:.4">？🤝？</span>
+      <h3>まだ見ぬ握手</h3>
+      <div class="medals" style="margin-top:8px"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
+      <p class="locknote">${hint}<br>ごはん報告に二人の名前が並んだ日、この頁に灯るわ。</p>`;
+  }else{
+    const face=(c)=>c.thumb
+      ?`<img src="${c.thumb}" style="width:86px;height:86px;border-radius:14px;object-fit:cover;border:1.5px solid var(--line);background:#fff" onerror="this.outerHTML='<span style=font-size:50px>${c.emoji||'🍞'}</span>'">`
+      :`<span style="font-size:50px">${c.emoji||'🍞'}</span>`;
+    sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px">${face(ca)}<span style="font-size:28px">🤝</span>${face(cb)}</div>
+      <h3 style="margin-top:10px">${ca.name||''} × ${cb.name||''}</h3>
+      <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
+      <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
+      <div class="rirekisho"><b>ひとこと</b><span>${p.line}</span></div>
+      <div class="rirekisho"><b>はじめて</b><span>${S.shake[key]}、あなたの食卓で。</span></div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.a}')">${ca.emoji||'🍞'} ${ca.name||''}さん</button>
+        <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.b}')">${cb.emoji||'🍞'} ${cb.name||''}さん</button>
+      </div>`;
+  }
+  document.getElementById('modal').classList.add('on');
+}
+function openShakeInfo(){
+  const sheet=document.getElementById('sheet');
+  sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
+    ${mogTag('normal','ava')}
+    <h3 style="margin-top:6px">「握手」って?</h3>
+    <p style="font-size:13px;margin:10px 0 14px">食べものにはね、一緒に食べると力を貸し合える相手がいるの。たとえば、にんじんの色のもとは油と一緒だと体に届きやすい、といわれているでしょ。そういう相性のことを、この村では「握手」と呼ぶのよ。</p>
+    <div class="rirekisho"><b>みつけ方</b><span>ごはん報告の文に、相性のいい二人の名前が並んでいたら、それだけで握手が生まれるの。特別な操作はいらないわ。</span></div>
+    <div class="rirekisho"><b>しるし</b><span>${Object.entries(MEDAL_INFO).map(([m,[label]])=>emo(m)+' '+label).join(' ／ ')}。その握手が、体のどこにうれしいかのしるしなの。</span></div>
+    <p style="font-size:12px;color:var(--brown2);margin-top:14px">たのしい読み物としての目安なの。効き目を約束するものではないから、気楽に集めてね。</p>`;
+  document.getElementById('modal').classList.add('on');
+}
+document.getElementById('shakeInfoBtn').onclick=openShakeInfo;
 function renderShinbun(){
   const card=document.getElementById('shinbunCard');
   if(!card||!SHINBUN||!CHARS.length)return;
