@@ -114,8 +114,8 @@ main{padding:0 16px}
 .partner:hover{border-color:var(--orange);transform:translateY(-1px)}
 .partner img,.partner .pf{width:44px;height:44px;flex:none;border-radius:10px;object-fit:cover;background:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
 .partner .pt{flex:1;min-width:0}
-.partner .pn{font-size:12.5px;font-weight:900;color:var(--brown)}
-.partner .pe{font-size:11px;color:var(--brown2);line-height:1.5;margin-top:2px}
+.partner .pn{display:block;font-size:12.5px;font-weight:900;color:var(--brown)}
+.partner .pe{display:block;font-size:11px;color:var(--brown2);line-height:1.5;margin-top:2px}
 .partner .ptag{flex:none;font-size:15px}
 .sbook{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .sb{position:relative;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:9px 3px 7px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit}
@@ -124,8 +124,15 @@ main{padding:0 16px}
 .sb .nm{display:block;font-size:9px;color:var(--brown2);font-weight:700;margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb .tg{position:absolute;top:-7px;right:-5px;font-size:11px;background:var(--card);border:1.5px solid var(--line);border-radius:50%;width:21px;height:21px;display:flex;align-items:center;justify-content:center}
 .sb.mist{background:transparent;border-style:dashed}
-.sb.mist .du{filter:grayscale(1);opacity:.35}
+.sb.mist .du{filter:grayscale(1);opacity:.45}
 .sb.found{border-color:var(--lime);background:linear-gradient(180deg,#fdfff4,#f4f9e3)}
+.swk{margin:0 0 14px}
+.swk-h{font-size:12.5px;font-weight:900;color:var(--orange-d);display:flex;align-items:center;gap:5px;margin-bottom:7px}
+.swk-h::before{content:"🔥";font-size:14px}
+.swk .partner.done{border-color:var(--lime);background:linear-gradient(180deg,#fdfff4,#f4f9e3)}
+.sprogrow{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+.sprog{border:1.5px solid var(--line);background:var(--cream);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:900;color:var(--brown2)}
+.sprog.comp{border-color:var(--lime);color:var(--lime-d);background:#f4f9e3}
 .sheet a.note{display:block;text-align:center;margin-top:16px;background:var(--orange);color:#fff;font-weight:900;font-size:14px;text-decoration:none;border-radius:999px;padding:12px;box-shadow:0 3px 0 var(--orange-d)}
 .sheet .close{position:sticky;top:0;float:right;z-index:2;border:none;background:var(--card);border-radius:50%;width:34px;height:34px;font-size:15px;color:var(--brown2);cursor:pointer;box-shadow:var(--shadow)}
 nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:480px;width:100%;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-top:1.5px solid var(--line);display:flex;z-index:10;padding:4px 0 calc(4px + env(safe-area-inset-bottom))}
@@ -226,7 +233,9 @@ footer{padding:28px 18px 10px;font-size:10.5px;color:var(--brown2);text-align:ce
     <div class="card" id="shakeBookCard" style="display:none">
       <h2 style="display:flex;align-items:center;justify-content:space-between">🤝 握手帳
         <button id="shakeInfoBtn" style="border:2px solid var(--line);background:var(--cream);border-radius:50%;width:26px;height:26px;font-size:13px;color:var(--brown2);cursor:pointer;font-weight:900;font-family:inherit">?</button></h2>
-      <p style="font-size:12px;color:var(--brown2);margin:0 0 10px">一緒に食べると力を貸し合う、相性のいい二人の記録帳よ。ごはん報告にその二人が並んだら、ここに灯るの。</p>
+      <p style="font-size:12px;color:var(--brown2);margin:0 0 10px">一緒に食べると力を貸し合う、相性のいい二人の台紙よ。二人が同じごはんの報告に並ぶと、その握手に色が灯るの。</p>
+      <div id="shakeWeek"></div>
+      <div id="shakeProg" class="sprogrow"></div>
       <div class="sbook" id="shakeBook"></div>
       <p id="shakeSum" style="font-size:11px;color:var(--brown2);margin-top:10px;text-align:center"></p>
     </div>
@@ -794,6 +803,13 @@ const MEAL_REACT_MATCH=[
   "きゃっ、{n}さん! 村の広報係として、記事にしたいくらいの良い選択よ。"
 ];
 const MOOD_WORD={"😋":"おいしかった","😌":"ほっとした","💪":"食べきった"};
+/* おしい!（あとひとりで握手）のセリフ（Fable直筆・かぶり防止はpickで） */
+const NEAR_LINES=[
+  "今夜は、あとひとりで握手だったの。{a}さんの手の先には、{b}さんが待ってるわ。",
+  "{a}さん、ちょっとそわそわしてたわよ。{b}さんが隣にいたら、って。今度呼んであげて。",
+  "おしい組み合わせを見つけたの。{a}さんは{b}さんと相性がいいのよ。明日の食卓で、どうかしら。",
+  "{a}さんまで来てるの。あとは{b}さんさえいれば、握手が生まれたのに。……ふふ、宿題ね。"
+];
 let curMood="😋";
 
 /* --- きょうの食卓（4席＋まごわやさしい） --- */
@@ -954,10 +970,12 @@ document.getElementById('logBtn').onclick=()=>{
   const hitChar=CHARS.find(c=>c.name && c.name.length>=2 && txt.includes(c.name));
   const newG=[...groupsOf(txt)];
   /* 握手検出: 報告の中に相性ペアの二人がそろっていたら発火 */
+  /* 「朝ごはん」等の言い回しが ごはん(お米)に誤爆しないよう、判定用テキストからだけ除く */
+  const shakeTxt=txt.replace(/(朝|昼|夜|晩|あさ|ひる|よる|ばん)ごはん/g,'');
   let shakeMsg='';
   const shakeHits=(PAIRS.pairs||[]).map(p=>{
     const ca=CHARS.find(x=>x.id===p.a), cb=CHARS.find(x=>x.id===p.b);
-    return (ca&&cb&&ca.name&&cb.name&&txt.includes(ca.name)&&txt.includes(cb.name))?{p,ca,cb}:null;
+    return (ca&&cb&&ca.name&&cb.name&&shakeTxt.includes(ca.name)&&shakeTxt.includes(cb.name))?{p,ca,cb}:null;
   }).filter(Boolean);
   if(shakeHits.length){
     S.shake=S.shake||{};
@@ -967,7 +985,25 @@ document.getElementById('logBtn').onclick=()=>{
     save();
     const {p,ca,cb}=shakeHits[0];
     const first=newKeys.includes(p.a+'__'+p.b);
-    shakeMsg=`<div style="margin-top:8px;padding:9px 12px;background:#F4F9E3;border:1.5px solid var(--lime);border-radius:12px;font-size:11.5px;line-height:1.6">🤝 <b>${first?'はじめての握手!':'握手!'}</b> ${ca.name}さんと${cb.name}さんが、あなたの体の中で手をつないだわ。<br><span style="color:var(--brown2)">${p.effect}</span>${first?`<br><span style="font-size:11px;color:var(--lime-d);font-weight:700">下の握手帳に、書き留めておいたわ ✦</span>`:''}${shakeHits.length>1?`<br><span style="font-size:11px;color:var(--brown2)">今夜はもうひと組、手をつないでいたみたい。握手帳をのぞいてみて。</span>`:''}</div>`;
+    shakeMsg=`<div style="margin-top:8px;padding:9px 12px;background:#F4F9E3;border:1.5px solid var(--lime);border-radius:12px;font-size:11.5px;line-height:1.6">🤝 <b>${first?'はじめての握手!':'握手!'}</b> ${ca.name}さんと${cb.name}さんが、あなたの体の中で手をつないだわ。<br><span style="color:var(--brown2)">${p.effect}</span>${first?`<br><span style="font-size:11px;color:var(--lime-d);font-weight:700">下の握手帳に、色が灯ったわよ ✦</span>`:''}${shakeHits.length>1?`<br><span style="font-size:11px;color:var(--brown2)">今夜はもうひと組、手をつないでいたみたい。握手帳をのぞいてみて。</span>`:''}</div>`;
+  }
+  /* おしい!検出: ペアの片割れだけが食卓にいた（未発見ペアのみ・1日1回・握手発火時は出さない） */
+  if(!shakeHits.length && S.nearDay!==today()){
+    const nearHits=[];
+    (PAIRS.pairs||[]).forEach(p=>{
+      const k=p.a+'__'+p.b; if(S.shake&&S.shake[k])return;
+      const ca=CHARS.find(x=>x.id===p.a), cb=CHARS.find(x=>x.id===p.b);
+      if(!ca||!cb||!ca.name||!cb.name)return;
+      const hasA=shakeTxt.includes(ca.name), hasB=shakeTxt.includes(cb.name);
+      if(hasA!==hasB)nearHits.push({p,key:k,have:hasA?ca:cb,miss:hasA?cb:ca});
+    });
+    if(nearHits.length){
+      const wkKeys=(S.week&&S.week.keys)||[];
+      nearHits.sort((x,y)=>(wkKeys.includes(y.key)?1:0)-(wkKeys.includes(x.key)?1:0));
+      const {p,have,miss}=nearHits[0];
+      S.nearDay=today(); save();
+      shakeMsg=`<div style="margin-top:8px;padding:9px 12px;background:#FDF6E3;border:1.5px dashed var(--orange);border-radius:12px;font-size:11.5px;line-height:1.6">🤝 <b>おしい!</b> ${pick(NEAR_LINES,'near').replace(/{a}/g,have.name).replace(/{b}/g,miss.name)}<br><span style="font-size:11px;color:var(--brown2)">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}握手になるはずよ。くわしくは下の握手帳でどうぞ。</span></div>`;
+    }
   }
   const react=document.getElementById('mealReact');
   const mainLine=hitChar?meetLine(hitChar.name,(meetMap()[hitChar.name]||{count:1}).count):pick(MEAL_REACT,'mreact');
@@ -1009,8 +1045,20 @@ const MEDAL_INFO={'👁':['目にいい','#8FC3DC'],'🧠':['頭にいい','#F39
 fetch('data/pairs.json').then(r=>r.json()).then(d=>{PAIRS=window.EMBED_PAIRS||d;renderShakeBook();}).catch(()=>{PAIRS=window.EMBED_PAIRS||{medal:{},pairs:[]};renderShakeBook();});
 function medalsOf(id){return (PAIRS.medal&&PAIRS.medal[id])||[];}
 function partnersOf(id){return (PAIRS.pairs||[]).filter(p=>p.a===id||p.b===id).map(p=>({pid:p.a===id?p.b:p.a,tag:p.tag,effect:p.effect,line:p.line}));}
-/* ===== 握手帳（フェーズ3: 発見したペアの記録帳） ===== */
+/* ===== 握手帳（フェーズ3: ラリー台紙＝全ペア公開・食べたら点灯） ===== */
 const emo=t=>t==='👁'?'👁️':t; /* 目の絵文字はカラー表示を強制（環境により白黒の細い目になるため） */
+/* 今週の握手: 週の頭に未発見ペアから3組を決めて、週のあいだ固定（達成したら✓のまま残す） */
+function weekKey(){const d=new Date();const off=(d.getDay()+6)%7;d.setDate(d.getDate()-off);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function weeklyPairs(){
+  const pairs=PAIRS.pairs||[]; if(!pairs.length)return[];
+  const wk=weekKey(); S.shake=S.shake||{};
+  if(!S.week||S.week.k!==wk||!Array.isArray(S.week.keys)){
+    const undisc=pairs.filter(p=>!S.shake[p.a+'__'+p.b]);
+    const pool=(undisc.length?undisc:pairs).slice().sort((x,y)=>hash(wk+x.a+x.b)-hash(wk+y.a+y.b));
+    S.week={k:wk,keys:pool.slice(0,3).map(p=>p.a+'__'+p.b)}; save();
+  }
+  return S.week.keys.map(k=>pairs.find(p=>p.a+'__'+p.b===k)).filter(Boolean);
+}
 function renderShakeBook(){
   const el=document.getElementById('shakeBook'); if(!el)return;
   const card=document.getElementById('shakeBookCard');
@@ -1018,19 +1066,34 @@ function renderShakeBook(){
   if(!pairs.length||!CHARS.length){card.style.display='none';return;}
   card.style.display='';
   S.shake=S.shake||{};
+  /* 今週の握手（お題） */
+  const wkP=weeklyPairs();
+  document.getElementById('shakeWeek').innerHTML=wkP.length?`<div class="swk"><div class="swk-h">今週の握手</div>${wkP.map(p=>{
+    const key=p.a+'__'+p.b, done=!!S.shake[key];
+    const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
+    return `<button class="partner ${done?'done':''}" data-k="${key}"><span class="pf" style="font-size:16px;letter-spacing:-3px">${ca.emoji||'🍞'}${cb.emoji||'🍞'}</span><span class="pt"><span class="pn">${ca.name||''} × ${cb.name||''}${done?' <span style="color:var(--lime-d)">✓ 灯ったわ</span>':''}</span><span class="pe">${p.effect}</span></span><span class="ptag">${emo(p.tag)}</span></button>`;
+  }).join('')}</div>`:'';
+  /* 勲章別の進捗 */
+  document.getElementById('shakeProg').innerHTML=['👁','🧠','💪','🌱'].map(t=>{
+    const all=pairs.filter(p=>p.tag===t); if(!all.length)return '';
+    const n=all.filter(p=>S.shake[p.a+'__'+p.b]).length;
+    return `<span class="sprog ${n===all.length?'comp':''}">${emo(t)} ${MEDAL_INFO[t][0]} ${n}/${all.length}</span>`;
+  }).join('');
+  /* 台紙（全ペア公開・未達成はグレー） */
   const order={'👁':0,'🧠':1,'💪':2,'🌱':3};
   const sorted=pairs.slice().sort((x,y)=>(order[x.tag]??9)-(order[y.tag]??9));
   el.innerHTML=sorted.map(p=>{
     const key=p.a+'__'+p.b, found=!!S.shake[key];
     const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
-    return `<button class="sb ${found?'found':'mist'}" data-k="${key}"><span class="tg">${emo(p.tag)}</span><span class="du">${found?(ca.emoji||'🍞')+'🤝'+(cb.emoji||'🍞'):'？🤝？'}</span><span class="nm">${found?`${ca.name||''}×${cb.name||''}`:'？？？'}</span></button>`;
+    return `<button class="sb ${found?'found':'mist'}" data-k="${key}"><span class="tg">${emo(p.tag)}</span><span class="du">${(ca.emoji||'🍞')+'🤝'+(cb.emoji||'🍞')}</span><span class="nm">${ca.name||''}×${cb.name||''}</span></button>`;
   }).join('');
   el.querySelectorAll('.sb').forEach(b=>b.onclick=()=>openShakeSheet(b.dataset.k));
+  document.getElementById('shakeWeek').querySelectorAll('.partner').forEach(b=>b.onclick=()=>openShakeSheet(b.dataset.k));
   const n=pairs.filter(p=>S.shake[p.a+'__'+p.b]).length;
   document.getElementById('shakeSum').textContent =
-    n===0 ? `みつけた握手 0／${pairs.length}。最初のひと組は、案外ふつうの晩ごはんから生まれるのよ。`
-    : n===pairs.length ? `みつけた握手 ${n}／${pairs.length}。全部そろったわ。あなたの食卓、村で表彰ものよ。`
-    : `みつけた握手 ${n}／${pairs.length}`;
+    n===0 ? `灯った握手 0／${pairs.length}。今夜どれを狙うかは、あなたが決めていいのよ。`
+    : n===pairs.length ? `灯った握手 ${n}／${pairs.length}。全部そろったわ。あなたの食卓、村で表彰ものよ。`
+    : `灯った握手 ${n}／${pairs.length}`;
 }
 function openShakeSheet(key){
   const p=(PAIRS.pairs||[]).find(x=>x.a+'__'+x.b===key); if(!p)return;
@@ -1038,15 +1101,19 @@ function openShakeSheet(key){
   const found=S.shake&&S.shake[key];
   const sheet=document.getElementById('sheet');
   if(!found){
-    const known=[ca,cb].filter(c=>c.id&&S.unlocked.includes(c.id));
-    const hint=known.length
-      ? `片方は、<b>${known[0].name}さん</b>。お相手は、いつかの食卓で会えてからのお楽しみ。`
-      : `二人とも、まだ内緒。ずかんの仲間が増えた頃、また聞きに来て。`;
+    const face=(c)=>c.thumb
+      ?`<img src="${c.thumb}" style="width:86px;height:86px;border-radius:14px;object-fit:cover;border:1.5px solid var(--line);background:#fff;filter:grayscale(1);opacity:.55" onerror="this.outerHTML='<span style=font-size:50px;filter:grayscale(1);opacity:.55>${c.emoji||'🍞'}</span>'">`
+      :`<span style="font-size:50px;filter:grayscale(1);opacity:.55">${c.emoji||'🍞'}</span>`;
     sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
-      <span class="face" style="filter:grayscale(1);opacity:.4">？🤝？</span>
-      <h3>まだ見ぬ握手</h3>
-      <div class="medals" style="margin-top:8px"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
-      <p class="locknote">${hint}<br>ごはん報告に二人の名前が並んだ日、この頁に灯るわ。</p>`;
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px">${face(ca)}<span style="font-size:28px;filter:grayscale(1);opacity:.5">🤝</span>${face(cb)}</div>
+      <h3 style="margin-top:10px">${ca.name||''} × ${cb.name||''}</h3>
+      <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
+      <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
+      <div class="rirekisho"><b>灯し方</b><span>二人を同じごはんの報告に並べたら、この握手に色が灯るの。ひとことセリフは、そのときのお楽しみよ。</span></div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.a}')">${ca.emoji||'🍞'} ${ca.name||''}さん</button>
+        <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.b}')">${cb.emoji||'🍞'} ${cb.name||''}さん</button>
+      </div>`;
   }else{
     const face=(c)=>c.thumb
       ?`<img src="${c.thumb}" style="width:86px;height:86px;border-radius:14px;object-fit:cover;border:1.5px solid var(--line);background:#fff" onerror="this.outerHTML='<span style=font-size:50px>${c.emoji||'🍞'}</span>'">`
@@ -1071,7 +1138,8 @@ function openShakeInfo(){
     ${mogTag('normal','ava')}
     <h3 style="margin-top:6px">「握手」って?</h3>
     <p style="font-size:13px;margin:10px 0 14px">食べものにはね、一緒に食べると力を貸し合える相手がいるの。たとえば、にんじんの色のもとは油と一緒だと体に届きやすい、といわれているでしょ。そういう相性のことを、この村では「握手」と呼ぶのよ。</p>
-    <div class="rirekisho"><b>みつけ方</b><span>ごはん報告の文に、相性のいい二人の名前が並んでいたら、それだけで握手が生まれるの。特別な操作はいらないわ。</span></div>
+    <div class="rirekisho"><b>灯し方</b><span>ごはん報告の文に、相性のいい二人の名前が並んでいたら、それだけで握手が灯るの。特別な操作はいらないわ。</span></div>
+    <div class="rirekisho"><b>台紙</b><span>組み合わせは最初から全部見えてるのよ。今夜どの握手を狙うかは、あなたが決めていいの。迷ったら「今週の握手」からどうぞ。</span></div>
     <div class="rirekisho"><b>しるし</b><span>${Object.entries(MEDAL_INFO).map(([m,[label]])=>emo(m)+' '+label).join(' ／ ')}。その握手が、体のどこにうれしいかのしるしなの。</span></div>
     <p style="font-size:12px;color:var(--brown2);margin-top:14px">たのしい読み物としての目安なの。効き目を約束するものではないから、気楽に集めてね。</p>`;
   document.getElementById('modal').classList.add('on');
