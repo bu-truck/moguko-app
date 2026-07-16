@@ -1163,10 +1163,10 @@ function openShakeSheet(key){
   const sheet=document.getElementById('sheet');
   if(!found){
     const face=(c)=>c.thumb
-      ?`<img src="${c.thumb}" style="width:86px;height:86px;border-radius:14px;object-fit:cover;border:1.5px solid var(--line);background:#fff;filter:grayscale(1);opacity:.55" onerror="this.outerHTML='<span style=font-size:50px;filter:grayscale(1);opacity:.55>${c.emoji||'🍞'}</span>'">`
+      ?`<img src="${c.thumb}" style="width:42%;max-width:150px;height:auto;border-radius:12px;border:1.5px solid var(--line);background:#fff;filter:grayscale(1);opacity:.55" onerror="this.outerHTML='<span style=font-size:50px;filter:grayscale(1);opacity:.55>${c.emoji||'🍞'}</span>'">`
       :`<span style="font-size:50px;filter:grayscale(1);opacity:.55">${c.emoji||'🍞'}</span>`;
     sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
-      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px">${face(ca)}<span style="font-size:28px;filter:grayscale(1);opacity:.5">🤝</span>${face(cb)}</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px">${face(ca)}<span style="font-size:24px;flex:none;filter:grayscale(1);opacity:.5">🤝</span>${face(cb)}</div>
       <h3 style="margin-top:10px">${ca.name||''} × ${cb.name||''}</h3>
       <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
@@ -1178,10 +1178,10 @@ function openShakeSheet(key){
       </div>`;
   }else{
     const face=(c)=>c.thumb
-      ?`<img src="${c.thumb}" style="width:86px;height:86px;border-radius:14px;object-fit:cover;border:1.5px solid var(--line);background:#fff" onerror="this.outerHTML='<span style=font-size:50px>${c.emoji||'🍞'}</span>'">`
+      ?`<img src="${c.thumb}" style="width:42%;max-width:150px;height:auto;border-radius:12px;border:1.5px solid var(--line);background:#fff" onerror="this.outerHTML='<span style=font-size:50px>${c.emoji||'🍞'}</span>'">`
       :`<span style="font-size:50px">${c.emoji||'🍞'}</span>`;
     sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
-      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px">${face(ca)}<span style="font-size:28px">🤝</span>${face(cb)}</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px">${face(ca)}<span style="font-size:24px;flex:none">🤝</span>${face(cb)}</div>
       <h3 style="margin-top:10px">${ca.name||''} × ${cb.name||''}</h3>
       <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
