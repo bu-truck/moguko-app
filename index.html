@@ -1072,7 +1072,7 @@ fetch('data/shinbun.json').then(r=>r.json()).then(d=>{SHINBUN=window.EMBED_SHINB
 /* ===== 握手（ペア）データ ===== */
 let PAIRS={medal:{},pairs:[]};
 const MEDAL_INFO={'👁':['目にいい','#8FC3DC'],'🧠':['頭にいい','#F39B3B'],'💪':['筋肉にいい','#A9C93F'],'🌱':['心にいい','#F5A8B8']};
-fetch('data/pairs.json').then(r=>r.json()).then(d=>{PAIRS=window.EMBED_PAIRS||d;renderShakeBook();}).catch(()=>{PAIRS=window.EMBED_PAIRS||{medal:{},pairs:[]};renderShakeBook();});
+fetch('data/pairs.json').then(r=>r.json()).then(d=>{PAIRS=window.EMBED_PAIRS||d;renderShakeBook();renderInvite();}).catch(()=>{PAIRS=window.EMBED_PAIRS||{medal:{},pairs:[]};renderShakeBook();renderInvite();});
 function medalsOf(id){return (PAIRS.medal&&PAIRS.medal[id])||[];}
 function partnersOf(id){return (PAIRS.pairs||[]).filter(p=>p.a===id||p.b===id).map(p=>({pid:p.a===id?p.b:p.a,tag:p.tag,effect:p.effect,line:p.line}));}
 /* ===== 握手帳（フェーズ3: ラリー台紙＝全ペア公開・食べたら点灯） ===== */
@@ -1379,12 +1379,27 @@ function renderInvite(){
   document.getElementById('inviteLead').textContent=pick(INVITE_LEADS,'ilead');
   const cands=inviteCandidates();
   const reasons=buildReasons(cands);
+  /* その子の「良さ」を一行で（勲章→握手相手→得意技の順で、あるものを出す） */
+  const goodLine=(c)=>{
+    const bits=[];
+    const meds=medalsOf(c.id);
+    if(meds.length)bits.push(meds.map(m=>emo(m)+' '+MEDAL_INFO[m][0]).join('・'));
+    const pts=partnersOf(c.id);
+    if(pts.length){
+      const pt=pts[hash(c.id+today())%pts.length];
+      const pc=CHARS.find(x=>x.id===pt.pid);
+      if(pc)bits.push(`🤝 ${pc.name}さんと相性◎`);
+    }
+    if(!bits.length&&c.skill)bits.push('得意技: '+c.skill);
+    return bits.length?`<div style="font-size:10.5px;color:var(--lime-d);font-weight:700;margin-top:2px">${bits.join('　')}</div>`:'';
+  };
   document.getElementById('inviteList').innerHTML=cands.map((s,i)=>`
     <div style="display:flex;gap:10px;align-items:center;padding:9px 4px;border-bottom:1.5px dashed var(--line)">
       <span style="font-size:26px;flex:none">${s.c.emoji||'🍽️'}</span>
       <div style="flex:1;min-width:0">
         <b style="font-size:13.5px">${s.c.name}</b>
         <div style="font-size:11px;color:var(--brown2)">${reasons[i]}</div>
+        ${goodLine(s.c)}
       </div>
       <button class="choice" style="flex:none;width:auto;margin:0;padding:7px 12px;font-size:12px;white-space:nowrap" data-add="${s.c.name}">🧺 メモへ</button>
     </div>`).join('');
