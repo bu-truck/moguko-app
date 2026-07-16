@@ -1089,6 +1089,24 @@ function weeklyPairs(){
   }
   return S.week.keys.map(k=>pairs.find(p=>p.a+'__'+p.b===k)).filter(Boolean);
 }
+/* これまでのきろく全体をさかのぼって、そろっていた握手を灯す（日ごとに判定・初発見日はその日） */
+function syncShakeFromLogs(){
+  if(!CHARS.length||!(PAIRS.pairs||[]).length)return 0;
+  S.shake=S.shake||{};
+  const byday={};
+  (S.logs||[]).forEach(l=>{if(l.d&&l.t)byday[l.d]=(byday[l.d]||'')+'、'+l.t;});
+  let n=0;
+  Object.keys(byday).sort().forEach(d=>{
+    const nt=normFood(byday[d]);
+    (PAIRS.pairs||[]).forEach(p=>{
+      const k=p.a+'__'+p.b; if(S.shake[k])return;
+      const ca=CHARS.find(x=>x.id===p.a), cb=CHARS.find(x=>x.id===p.b);
+      if(ca&&cb&&ca.name&&cb.name&&nt.includes(ca.name)&&nt.includes(cb.name)){S.shake[k]=d;n++;}
+    });
+  });
+  if(n)save();
+  return n;
+}
 function renderShakeBook(){
   const el=document.getElementById('shakeBook'); if(!el)return;
   const card=document.getElementById('shakeBookCard');
@@ -1096,6 +1114,8 @@ function renderShakeBook(){
   if(!pairs.length||!CHARS.length){card.style.display='none';return;}
   card.style.display='';
   S.shake=S.shake||{};
+  const backfilled=syncShakeFromLogs();
+  if(backfilled)setTimeout(()=>toast(`🤝 これまでのきろくの中に、握手を${backfilled}組みつけたわ`),600);
   /* 今週の握手（お題） */
   const wkP=weeklyPairs();
   document.getElementById('shakeWeek').innerHTML=wkP.length?`<div class="swk"><div class="swk-h">今週の握手</div>${wkP.map(p=>{
