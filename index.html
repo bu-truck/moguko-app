@@ -233,7 +233,7 @@ footer{padding:28px 18px 10px;font-size:10.5px;color:var(--brown2);text-align:ce
     <div class="card" id="shakeBookCard" style="display:none">
       <h2 style="display:flex;align-items:center;justify-content:space-between">🤝 握手帳
         <button id="shakeInfoBtn" style="border:2px solid var(--line);background:var(--cream);border-radius:50%;width:26px;height:26px;font-size:13px;color:var(--brown2);cursor:pointer;font-weight:900;font-family:inherit">?</button></h2>
-      <p style="font-size:12px;color:var(--brown2);margin:0 0 10px">一緒に食べると力を貸し合う、相性のいい二人の台紙よ。二人が同じごはんの報告に並ぶと、その握手に色が灯るの。</p>
+      <p style="font-size:12px;color:var(--brown2);margin:0 0 10px">一緒に食べると力を貸し合う、相性のいい二人の台紙よ。同じ日の報告に二人がそろうと、その握手に色が灯るの（朝と夜に分かれても大丈夫）。</p>
       <div id="shakeWeek"></div>
       <div id="shakeProg" class="sprogrow"></div>
       <div class="sbook" id="shakeBook"></div>
@@ -810,6 +810,35 @@ const NEAR_LINES=[
   "おしい組み合わせを見つけたの。{a}さんは{b}さんと相性がいいのよ。明日の食卓で、どうかしら。",
   "{a}さんまで来てるの。あとは{b}さんさえいれば、握手が生まれたのに。……ふふ、宿題ね。"
 ];
+/* 食べものの表記ゆれ吸収（漢字・カタカナ・別名→キャラの正式名）。判定にだけ使い、表示は変えない */
+const FOOD_ALIAS=[
+  [/かき揚げ|かきあげ/g,"天ぷら"],
+  [/切り?干し?大根/g,"きりぼしだいこん"],
+  [/ニラ玉/g,"ニラたまご"],[/う巻き/g,"うなぎたまご"],
+  [/納豆/g,"なっとう"],[/ご飯|御飯/g,"ごはん"],
+  [/玉子|卵/g,"たまご"],
+  [/牛乳|ミルク/g,"ぎゅうにゅう"],[/豆乳/g,"とうにゅう"],
+  [/豚肉|豚/g,"ぶたにく"],[/牛肉/g,"ぎゅうにく"],[/鶏肉|鳥肉|とり肉|鶏/g,"とりにく"],
+  [/ほうれん草|ホウレンソウ/g,"ほうれんそう"],[/人参|ニンジン/g,"にんじん"],
+  [/大根|ダイコン/g,"だいこん"],
+  [/玉ねぎ|玉葱|タマネギ/g,"たまねぎ"],[/葱|ネギ/g,"ねぎ"],[/ガーリック/g,"にんにく"],
+  [/生姜|ショウガ/g,"しょうが"],
+  [/豆腐|冷奴|冷やっこ/g,"とうふ"],[/油揚げ|油あげ/g,"あぶらあげ"],
+  [/鮭|サーモン|しゃけ/g,"さけ"],[/鯖|さば/g,"サバ"],[/鮪|マグロ|ツナ/g,"まぐろ"],
+  [/鰹節|かつお節|おかか/g,"かつおぶし"],[/鰹|カツオ/g,"かつお"],
+  [/鰯|イワシ/g,"いわし"],[/秋刀魚|サンマ/g,"さんま"],[/鰤|ブリ/g,"ぶり"],[/鯵|アジ/g,"あじ"],
+  [/鰻|ウナギ|うな重|うな丼/g,"うなぎ"],
+  [/小松菜|コマツナ/g,"こまつな"],[/椎茸|シイタケ/g,"しいたけ"],[/舞茸|マイタケ/g,"まいたけ"],
+  [/昆布|コンブ/g,"こんぶ"],[/ワカメ|若布/g,"わかめ"],[/ヒジキ/g,"ひじき"],
+  [/蓮根|レンコン/g,"れんこん"],[/アスパラ(ガス)?/g,"アスパラガス"],
+  [/胡麻油|ゴマ油/g,"ごま油"],[/胡麻|ゴマ/g,"ごま"],[/オリーブ油/g,"オリーブオイル"],
+  [/蜂蜜|ハチミツ/g,"はちみつ"],[/梅干し?/g,"うめぼし"],
+  [/きな粉|黄粉/g,"きなこ"],[/牡蠣|牡蛎|カキ/g,"かき"],[/アサリ/g,"あさり"],
+  [/おくら/g,"オクラ"],[/きゃべつ/g,"キャベツ"],[/れもん/g,"レモン"],[/にら/g,"ニラ"],
+  [/お酢/g,"酢"],[/酢/g,"お酢"],
+  [/(朝|昼|夜|晩|夕|あさ|ひる|よる|ばん|ゆう)ごはん/g,""]
+];
+function normFood(t){FOOD_ALIAS.forEach(([r,s])=>{t=t.replace(r,s);});return t;}
 let curMood="😋";
 
 /* --- きょうの食卓（4席＋まごわやさしい） --- */
@@ -966,17 +995,18 @@ document.getElementById('logBtn').onclick=()=>{
   const txt=document.getElementById('mealText').value.trim();
   if(!txt){toast('何を食べたか、ひとことだけ教えて');document.getElementById('mealText').focus();return;}
   S.logs=S.logs||[]; S.logs.unshift({d:today(),t:txt,m:curMood,s:curSlot}); save();
-  /* キャラ照合（名前がテキストに含まれるか） */
-  const hitChar=CHARS.find(c=>c.name && c.name.length>=2 && txt.includes(c.name));
+  /* キャラ照合（名前がテキストに含まれるか。表記ゆれはnormFoodで吸収） */
+  const ntxt=normFood(txt);
+  const hitChar=CHARS.find(c=>c.name && c.name.length>=2 && ntxt.includes(c.name));
   const newG=[...groupsOf(txt)];
-  /* 握手検出: 報告の中に相性ペアの二人がそろっていたら発火 */
-  /* 「朝ごはん」等の言い回しが ごはん(お米)に誤爆しないよう、判定用テキストからだけ除く */
-  const shakeTxt=txt.replace(/(朝|昼|夜|晩|あさ|ひる|よる|ばん)ごはん/g,'');
+  /* 握手検出: 同じ日の報告ぜんぶを合わせて、ペアの二人がそろったら発火 */
+  /* （朝ににんじん・夜にごま油、でもちゃんと灯る。今回の報告で新しくそろった組だけ祝う） */
+  const todays=(S.logs||[]).filter(l=>l.d===today()).map(l=>l.t);
+  const nowTxt=normFood(todays.join('、'));
+  const prevTxt=normFood(todays.slice(1).join('、'));
+  const pairIn=(p,t)=>{const ca=CHARS.find(x=>x.id===p.a),cb=CHARS.find(x=>x.id===p.b);return (ca&&cb&&ca.name&&cb.name&&t.includes(ca.name)&&t.includes(cb.name))?{p,ca,cb}:null;};
   let shakeMsg='';
-  const shakeHits=(PAIRS.pairs||[]).map(p=>{
-    const ca=CHARS.find(x=>x.id===p.a), cb=CHARS.find(x=>x.id===p.b);
-    return (ca&&cb&&ca.name&&cb.name&&shakeTxt.includes(ca.name)&&shakeTxt.includes(cb.name))?{p,ca,cb}:null;
-  }).filter(Boolean);
+  const shakeHits=(PAIRS.pairs||[]).map(p=>{const hit=pairIn(p,nowTxt);return (hit&&!pairIn(p,prevTxt))?hit:null;}).filter(Boolean);
   if(shakeHits.length){
     S.shake=S.shake||{};
     /* その報告に含まれる握手は全部記録（日付は初発見日を残す） */
@@ -994,7 +1024,7 @@ document.getElementById('logBtn').onclick=()=>{
       const k=p.a+'__'+p.b; if(S.shake&&S.shake[k])return;
       const ca=CHARS.find(x=>x.id===p.a), cb=CHARS.find(x=>x.id===p.b);
       if(!ca||!cb||!ca.name||!cb.name)return;
-      const hasA=shakeTxt.includes(ca.name), hasB=shakeTxt.includes(cb.name);
+      const hasA=nowTxt.includes(ca.name), hasB=nowTxt.includes(cb.name);
       if(hasA!==hasB)nearHits.push({p,key:k,have:hasA?ca:cb,miss:hasA?cb:ca});
     });
     if(nearHits.length){
@@ -1097,14 +1127,14 @@ function renderShakeBook(){
 }
 /* 灯し方の口上（ページごとに言い回しを変える。hashで固定＝同じ頁はいつも同じ文） */
 const TOMOSHI_LINES=[
-  "二人を同じごはんの報告に並べたら、この頁に色が灯るの。ひとことセリフは、そのときのお楽しみ。",
-  "同じ食卓で二人の名前を報告してくれたら、灯るわ。灯った日には、この子たちのひとことも聞けるのよ。",
-  "報告の一行に、二人がそろっていればいいの。そのとき何て言うかは……会ってからのお楽しみね。",
-  "二人が同じごはんに来た日、ここに火が入るの。せっかくだから、セリフは灯ってから読んでちょうだい。",
-  "やり方は簡単。二人まとめて、ごはん報告に書くだけ。灯った瞬間のひとことは、取っておきの内緒よ。",
-  "この二人が食卓で出会ったら、灯りがつくの。何をささやき合うかは、その日までのひみつ。",
-  "同じ報告に二人の名前。それだけで、この握手は生まれるわ。続きの言葉は、灯ってからね。",
-  "二人そろって報告された夜、この頁が色づくの。ひとことは、そのごほうびに取ってあるわ。"
+  "同じ日の報告に二人の名前がそろったら、この頁に色が灯るの。ひとことセリフは、そのときのお楽しみ。",
+  "同じ日の食卓に二人が来てくれたら、灯るわ。朝と夜に分かれていても、ちゃんと数えてるのよ。",
+  "きょうの報告のどこかに、二人がそろっていればいいの。そのとき何て言うかは……会ってからのお楽しみね。",
+  "二人が同じ日のごはんに来たら、ここに火が入るの。せっかくだから、セリフは灯ってから読んでちょうだい。",
+  "やり方は簡単。今日のうちに、二人ともごはん報告に書くだけ。灯った瞬間のひとことは、取っておきの内緒よ。",
+  "この二人が同じ日の食卓で出会ったら、灯りがつくの。何をささやき合うかは、その日までのひみつ。",
+  "同じ日の報告に二人の名前。それだけで、この握手は生まれるわ。続きの言葉は、灯ってからね。",
+  "二人そろって報告された日、この頁が色づくの。ひとことは、そのごほうびに取ってあるわ。"
 ];
 function openShakeSheet(key){
   const p=(PAIRS.pairs||[]).find(x=>x.a+'__'+x.b===key); if(!p)return;
@@ -1151,7 +1181,7 @@ function openShakeInfo(){
     ${mogTag('normal','ava')}
     <h3 style="margin-top:6px">「握手」って?</h3>
     <p style="font-size:13px;margin:10px 0 14px">食べものにはね、一緒に食べると力を貸し合える相手がいるの。たとえば、にんじんの色のもとは油と一緒だと体に届きやすい、といわれているでしょ。そういう相性のことを、この村では「握手」と呼ぶのよ。</p>
-    <div class="rirekisho"><b>灯し方</b><span>ごはん報告の文に、相性のいい二人の名前が並んでいたら、それだけで握手が灯るの。特別な操作はいらないわ。</span></div>
+    <div class="rirekisho"><b>灯し方</b><span>ごはん報告に、相性のいい二人の名前がそろったら灯るの。同じ日なら、朝と夜に分かれていても大丈夫。漢字でもひらがなでも、ちゃんと聞き分けるわ。</span></div>
     <div class="rirekisho"><b>台紙</b><span>組み合わせは最初から全部見えてるのよ。今夜どの握手を狙うかは、あなたが決めていいの。迷ったら「今週の握手」からどうぞ。</span></div>
     <div class="rirekisho"><b>しるし</b><span>${Object.entries(MEDAL_INFO).map(([m,[label]])=>emo(m)+' '+label).join(' ／ ')}。その握手が、体のどこにうれしいかのしるしなの。</span></div>
     <div class="rirekisho"><b>料理の例</b><span>それぞれの握手に「こんな料理で」を添えてあるわ。今夜の一皿の、ヒントにしてね。</span></div>
