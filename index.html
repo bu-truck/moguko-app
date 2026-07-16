@@ -1095,6 +1095,17 @@ function renderShakeBook(){
     : n===pairs.length ? `灯った握手 ${n}／${pairs.length}。全部そろったわ。あなたの食卓、村で表彰ものよ。`
     : `灯った握手 ${n}／${pairs.length}`;
 }
+/* 灯し方の口上（ページごとに言い回しを変える。hashで固定＝同じ頁はいつも同じ文） */
+const TOMOSHI_LINES=[
+  "二人を同じごはんの報告に並べたら、この頁に色が灯るの。ひとことセリフは、そのときのお楽しみ。",
+  "同じ食卓で二人の名前を報告してくれたら、灯るわ。灯った日には、この子たちのひとことも聞けるのよ。",
+  "報告の一行に、二人がそろっていればいいの。そのとき何て言うかは……会ってからのお楽しみね。",
+  "二人が同じごはんに来た日、ここに火が入るの。せっかくだから、セリフは灯ってから読んでちょうだい。",
+  "やり方は簡単。二人まとめて、ごはん報告に書くだけ。灯った瞬間のひとことは、取っておきの内緒よ。",
+  "この二人が食卓で出会ったら、灯りがつくの。何をささやき合うかは、その日までのひみつ。",
+  "同じ報告に二人の名前。それだけで、この握手は生まれるわ。続きの言葉は、灯ってからね。",
+  "二人そろって報告された夜、この頁が色づくの。ひとことは、そのごほうびに取ってあるわ。"
+];
 function openShakeSheet(key){
   const p=(PAIRS.pairs||[]).find(x=>x.a+'__'+x.b===key); if(!p)return;
   const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
@@ -1110,7 +1121,7 @@ function openShakeSheet(key){
       <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
       ${p.dish?`<div class="rirekisho"><b>こんな料理で</b><span>🍽️ ${p.dish}</span></div>`:''}
-      <div class="rirekisho"><b>灯し方</b><span>二人を同じごはんの報告に並べたら、この握手に色が灯るの。ひとことセリフは、そのときのお楽しみよ。</span></div>
+      <div class="rirekisho"><b>灯し方</b><span>${TOMOSHI_LINES[hash(key)%TOMOSHI_LINES.length]}</span></div>
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.a}')">${ca.emoji||'🍞'} ${ca.name||''}さん</button>
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.b}')">${cb.emoji||'🍞'} ${cb.name||''}さん</button>
@@ -1126,7 +1137,7 @@ function openShakeSheet(key){
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
       ${p.dish?`<div class="rirekisho"><b>こんな料理で</b><span>🍽️ ${p.dish}</span></div>`:''}
       <div class="rirekisho"><b>ひとこと</b><span>${p.line}</span></div>
-      <div class="rirekisho"><b>はじめて</b><span>${S.shake[key]}、あなたの食卓で。</span></div>
+      <div class="rirekisho"><b>はじめて</b><span>${[`${S.shake[key]}、あなたの食卓で。`,`${S.shake[key]}の食卓で、はじめて手をつないだの。`,`${S.shake[key]}。その日のごはんが、きっかけだったのよ。`,`${S.shake[key]}に、あなたが引き合わせてくれたの。`][hash(key+'f')%4]}</span></div>
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.a}')">${ca.emoji||'🍞'} ${ca.name||''}さん</button>
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.b}')">${cb.emoji||'🍞'} ${cb.name||''}さん</button>
