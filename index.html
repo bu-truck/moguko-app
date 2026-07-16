@@ -1071,7 +1071,7 @@ function renderShakeBook(){
   document.getElementById('shakeWeek').innerHTML=wkP.length?`<div class="swk"><div class="swk-h">今週の握手</div>${wkP.map(p=>{
     const key=p.a+'__'+p.b, done=!!S.shake[key];
     const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
-    return `<button class="partner ${done?'done':''}" data-k="${key}"><span class="pf" style="font-size:16px;letter-spacing:-3px">${ca.emoji||'🍞'}${cb.emoji||'🍞'}</span><span class="pt"><span class="pn">${ca.name||''} × ${cb.name||''}${done?' <span style="color:var(--lime-d)">✓ 灯ったわ</span>':''}</span><span class="pe">${p.effect}</span></span><span class="ptag">${emo(p.tag)}</span></button>`;
+    return `<button class="partner ${done?'done':''}" data-k="${key}"><span class="pf" style="font-size:16px;letter-spacing:-3px">${ca.emoji||'🍞'}${cb.emoji||'🍞'}</span><span class="pt"><span class="pn">${ca.name||''} × ${cb.name||''}${done?' <span style="color:var(--lime-d)">✓ 灯ったわ</span>':''}</span><span class="pe">${p.effect}</span>${p.dish?`<span class="pe" style="color:var(--orange-d);margin-top:3px">🍽️ ${p.dish}</span>`:''}</span><span class="ptag">${emo(p.tag)}</span></button>`;
   }).join('')}</div>`:'';
   /* 勲章別の進捗 */
   document.getElementById('shakeProg').innerHTML=['👁','🧠','💪','🌱'].map(t=>{
@@ -1109,6 +1109,7 @@ function openShakeSheet(key){
       <h3 style="margin-top:10px">${ca.name||''} × ${cb.name||''}</h3>
       <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
+      ${p.dish?`<div class="rirekisho"><b>こんな料理で</b><span>🍽️ ${p.dish}</span></div>`:''}
       <div class="rirekisho"><b>灯し方</b><span>二人を同じごはんの報告に並べたら、この握手に色が灯るの。ひとことセリフは、そのときのお楽しみよ。</span></div>
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.a}')">${ca.emoji||'🍞'} ${ca.name||''}さん</button>
@@ -1123,6 +1124,7 @@ function openShakeSheet(key){
       <h3 style="margin-top:10px">${ca.name||''} × ${cb.name||''}</h3>
       <div class="medals"><span class="medal" style="background:${MEDAL_INFO[p.tag][1]}">${emo(p.tag)} ${MEDAL_INFO[p.tag][0]}</span></div>
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
+      ${p.dish?`<div class="rirekisho"><b>こんな料理で</b><span>🍽️ ${p.dish}</span></div>`:''}
       <div class="rirekisho"><b>ひとこと</b><span>${p.line}</span></div>
       <div class="rirekisho"><b>はじめて</b><span>${S.shake[key]}、あなたの食卓で。</span></div>
       <div style="display:flex;gap:8px;margin-top:14px">
@@ -1141,7 +1143,8 @@ function openShakeInfo(){
     <div class="rirekisho"><b>灯し方</b><span>ごはん報告の文に、相性のいい二人の名前が並んでいたら、それだけで握手が灯るの。特別な操作はいらないわ。</span></div>
     <div class="rirekisho"><b>台紙</b><span>組み合わせは最初から全部見えてるのよ。今夜どの握手を狙うかは、あなたが決めていいの。迷ったら「今週の握手」からどうぞ。</span></div>
     <div class="rirekisho"><b>しるし</b><span>${Object.entries(MEDAL_INFO).map(([m,[label]])=>emo(m)+' '+label).join(' ／ ')}。その握手が、体のどこにうれしいかのしるしなの。</span></div>
-    <p style="font-size:12px;color:var(--brown2);margin-top:14px">たのしい読み物としての目安なの。効き目を約束するものではないから、気楽に集めてね。</p>`;
+    <div class="rirekisho"><b>料理の例</b><span>それぞれの握手に「こんな料理で」を添えてあるわ。今夜の一皿の、ヒントにしてね。</span></div>
+    <p style="font-size:12px;color:var(--brown2);margin-top:14px">効果は実在の栄養学の知見をもとにしているの（〜といわれる、の温度でね）。ただし、たのしい読み物としての目安。効き目を約束するものではないから、気楽に集めてちょうだい。</p>`;
   document.getElementById('modal').classList.add('on');
 }
 document.getElementById('shakeInfoBtn').onclick=openShakeInfo;
