@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>制作カレンダー｜モグ子SNS係</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Yusei+Magic&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#FBF7EE;--card:#fff;--brown:#4A3B28;--brown2:#9A8B72;--orange:#F39B3B;--orange-d:#D97F1E;--lime:#A9C93F;--lime-d:#84A428;--pink:#F5A8B8;--blue:#8FC3DC;--line:#EFE7D5;--gold:#E5C878}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:"Zen Maru Gothic",sans-serif;background:radial-gradient(rgba(214,190,140,.13) 1.3px,transparent 1.3px) 0 0/24px 24px,var(--cream);color:var(--brown);max-width:480px;margin:0 auto;padding:26px 14px 60px;line-height:1.7}
+h1{font-family:"Yusei Magic",sans-serif;font-size:18px;margin-bottom:2px}
+.sub{font-size:11.5px;color:var(--brown2);margin-bottom:10px}
+.prog{font-size:12px;font-weight:900;color:var(--lime-d);background:#f4f9e3;border:1.5px solid var(--lime);border-radius:999px;display:inline-block;padding:4px 14px;margin-bottom:14px}
+.toolrow{display:flex;gap:8px;margin-bottom:16px}
+.toolrow a{flex:1;text-align:center;font-size:12px;font-weight:900;color:var(--brown);background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:9px;text-decoration:none}
+.day{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 13px;margin-bottom:9px;box-shadow:0 1px 2px rgba(90,70,40,.05)}
+.day.today{border-color:var(--orange);border-width:2.5px;box-shadow:0 8px 24px rgba(243,155,59,.18)}
+.day.past{opacity:.72}
+.drow{display:flex;align-items:center;gap:9px}
+.dd{flex:none;width:52px;text-align:center;font-weight:900;font-size:13px;line-height:1.3}
+.dd small{display:block;font-size:9.5px;color:var(--brown2);font-weight:700}
+.dd .tdy{color:var(--orange-d)}
+.dchar{flex:none;font-size:24px}
+.dinfo{flex:1;min-width:0}
+.dname{font-size:13.5px;font-weight:900}
+.dlabel{font-size:10.5px;color:var(--brown2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.marks{display:flex;gap:6px;margin-top:9px}
+.mk{flex:1;border:1.5px dashed var(--line);background:transparent;border-radius:10px;padding:6px 2px;font-size:11px;font-weight:900;color:var(--brown2);cursor:pointer;font-family:inherit;transition:.15s;text-align:center}
+.mk.on{border-style:solid}
+.mk.draw.on{border-color:var(--orange);background:#fdf3dd;color:var(--orange-d)}
+.mk.post.on{border-color:var(--lime);background:#f4f9e3;color:var(--lime-d)}
+.mk.note.on{border-color:var(--blue);background:#eaf5fa;color:#4a8cab}
+.foot{font-size:10.5px;color:var(--brown2);margin-top:16px}
+</style>
+</head>
+<body>
+<h1>🗓️ 制作カレンダー</h1>
+<p class="sub">きょう描く子は決まってるわ。⭕️を集めるのはあなた、応援係はわたし。</p>
+<div class="prog" id="prog"></div>
+<div class="toolrow"><a href="post.html">🕊️ きょうのポスト画面へ</a></div>
+<div id="list">読み込み中……</div>
+<p class="foot">・🎨=イラスト完成 ／ 🕊=Xにポスト済み ／ 📖=Noteも出した<br>
+・タップで付け外しできるわ。印はこの端末に保存されるの（別の端末には引き継がれないから、作業する子をひとつ決めてね）<br>
+・できなかった日があっても、台紙は逃げないわ。それが村のルール。</p>
+<script>
+const KEY='moguko_sns_cal_v1';
+const S=JSON.parse(localStorage.getItem(KEY)||'{}');
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const pad=n=>String(n).padStart(2,'0');
+const t=new Date();
+const today=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
+const WD=['日','月','火','水','木','金','土'];
+fetch('data/sns_calendar.json').then(r=>r.json()).then(cal=>{
+  const days=cal.days||[];
+  const list=document.getElementById('list');
+  list.innerHTML=days.map(d=>{
+    const st=S[d.d]||{};
+    const dt=new Date(d.d+'T00:00:00');
+    const isToday=d.d===today, isPast=d.d<today;
+    return `<div class="day ${isToday?'today':''} ${isPast&&!isToday?'past':''}" id="d${d.d}">
+      <div class="drow">
+        <div class="dd ${isToday?'tdy':''}">${dt.getMonth()+1}/${dt.getDate()}<small>${WD[dt.getDay()]}${isToday?'・きょう':''}</small></div>
+        <div class="dchar">${d.emoji}</div>
+        <div class="dinfo"><div class="dname">${d.char}</div><div class="dlabel">${d.label}</div></div>
+      </div>
+      <div class="marks">
+        <button class="mk draw ${st.draw?'on':''}" data-d="${d.d}" data-k="draw">${st.draw?'🎨 描けた⭕️':'🎨 まだ'}</button>
+        <button class="mk post ${st.post?'on':''}" data-d="${d.d}" data-k="post">${st.post?'🕊 ポスト済✓':'🕊 まだ'}</button>
+        <button class="mk note ${st.note?'on':''}" data-d="${d.d}" data-k="note">${st.note?'📖 Noteも✓':'📖 まだ'}</button>
+      </div>
+    </div>`;
+  }).join('');
+  const refresh=()=>{
+    const done=days.filter(d=>(S[d.d]||{}).draw).length;
+    const posted=days.filter(d=>(S[d.d]||{}).post).length;
+    document.getElementById('prog').textContent=`🎨 ${done}／${days.length}体 ・ 🕊 ${posted}本 とんでいったわ`;
+  };
+  refresh();
+  list.querySelectorAll('.mk').forEach(b=>b.onclick=()=>{
+    const d=b.dataset.d,k=b.dataset.k;
+    S[d]=S[d]||{}; S[d][k]=S[d][k]?0:1; save();
+    b.classList.toggle('on',!!S[d][k]);
+    b.textContent=S[d][k]
+      ?(k==='draw'?'🎨 描けた⭕️':k==='post'?'🕊 ポスト済✓':'📖 Noteも✓')
+      :(k==='draw'?'🎨 まだ':k==='post'?'🕊 まだ':'📖 まだ');
+    refresh();
+  });
+  const tEl=document.getElementById('d'+today);
+  if(tEl)setTimeout(()=>tEl.scrollIntoView({block:'center',behavior:'smooth'}),300);
+}).catch(()=>{document.getElementById('list').textContent='カレンダーが読み込めなかったわ。data/sns_calendar.json を確認してね。';});
+</script>
+</body>
+</html>

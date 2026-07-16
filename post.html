@@ -42,9 +42,13 @@ fetch('data/sns_queue.json').then(r=>r.json()).then(q=>{
   const off=parseInt(new URLSearchParams(location.search).get('d')||'0',10)||0;
   const base=new Date(q.start+'T00:00:00');
   const now=new Date(); now.setDate(now.getDate()+off);
+  /* 記念日連動(dateつき)を最優先。なければ日替わりローテ(dateなし)から */
+  const dstr=todayStr(now);
+  const dated=posts.find(x=>x.date===dstr);
+  const pool=posts.filter(x=>!x.date);
   const days=Math.max(0,Math.floor((now-base)/86400000));
-  const idx=days%posts.length;
-  const p=posts[idx];
+  const idx=dated?posts.indexOf(dated):(pool.length?days%pool.length:0);
+  const p=dated||pool[idx]||posts[0];
   const full=p.t+(p.u?'\n'+p.u:'');
   document.getElementById('pdate').textContent=`${todayStr(now)} の分（${idx+1}／${posts.length}）`;
   document.getElementById('ptext').innerHTML=p.t.replace(/\n/g,'<br>')+(p.u?`<br><a href="${p.u}" target="_blank" rel="noopener">${p.u}</a>`:'');
