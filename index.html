@@ -91,7 +91,7 @@ main{padding:0 16px}
 .cell{aspect-ratio:1;background:var(--card);border:1.5px solid var(--line);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:25px;cursor:pointer;transition:.15s}
 .cell:hover{transform:translateY(-2px);border-color:var(--orange);box-shadow:var(--shadow)}
 .cell span{font-size:8.5px;color:var(--brown2);margin-top:1px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 3px;font-weight:700}
-.cell.lock{filter:grayscale(1);opacity:.32}
+.cell.lock{filter:grayscale(1);opacity:.5}
 .cats{display:flex;gap:7px;overflow-x:auto;padding:4px 0 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .cats button{flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-size:12px;color:var(--brown2);cursor:pointer;font-weight:700;font-family:inherit;transition:.15s}
 .cats button.on{background:var(--orange);border-color:var(--orange);color:#fff}
@@ -117,8 +117,8 @@ main{padding:0 16px}
 .partner .pn{display:block;font-size:12.5px;font-weight:900;color:var(--brown)}
 .partner .pe{display:block;font-size:11px;color:var(--brown2);line-height:1.5;margin-top:2px}
 .partner .ptag{flex:none;font-size:15px}
-.sbook{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.sb{position:relative;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:9px 3px 7px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit}
+.sbook{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.sb{position:relative;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:9px 3px 7px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit;min-width:0}
 .sb:hover{border-color:var(--orange);transform:translateY(-1px);box-shadow:var(--shadow)}
 .sb .du{display:block;font-size:18px;letter-spacing:1px}
 .sb .nm{display:block;font-size:9px;color:var(--brown2);font-weight:700;margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -131,7 +131,7 @@ main{padding:0 16px}
 .swk-h::before{content:"🔥";font-size:14px}
 .swk .partner.done{border-color:var(--lime);background:linear-gradient(180deg,#fdfff4,#f4f9e3)}
 .sprogrow{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
-.sprog{border:1.5px solid var(--line);background:var(--cream);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:900;color:var(--brown2)}
+.sprog{border:1.5px solid var(--line);background:var(--cream);border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:900;color:var(--brown2);white-space:nowrap}
 .sprog.comp{border-color:var(--lime);color:var(--lime-d);background:#f4f9e3}
 .sheet a.note{display:block;text-align:center;margin-top:16px;background:var(--orange);color:#fff;font-weight:900;font-size:14px;text-decoration:none;border-radius:999px;padding:12px;box-shadow:0 3px 0 var(--orange-d)}
 .sheet .close{position:sticky;top:0;float:right;z-index:2;border:none;background:var(--card);border-radius:50%;width:34px;height:34px;font-size:15px;color:var(--brown2);cursor:pointer;box-shadow:var(--shadow)}
@@ -194,6 +194,7 @@ footer{padding:28px 18px 10px;font-size:10.5px;color:var(--brown2);text-align:ce
 
   <!-- ずかん -->
   <section class="tab" id="tab-zukan">
+    <input id="zq" placeholder="🔍 なまえで探す（例: うなぎ、卵、豆腐）" style="width:100%;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13px;background:var(--card);color:var(--brown);font-family:inherit;margin:4px 0 8px">
     <div class="cats" id="cats"></div>
     <div class="grid" id="grid"></div>
     <p class="zsum" id="zsum"></p>
@@ -680,25 +681,27 @@ function renderCats(){
   el.innerHTML=cats.map(c=>`<button class="${c===curCat?'on':''}">${c}</button>`).join('');
   el.querySelectorAll('button').forEach(b=>b.onclick=()=>{curCat=b.textContent;renderCats();renderGrid();});
 }
+let zukanQ='';
+function isLit(c){return S.unlocked.includes(c.id)||!!c.note;} /* 灯る=Note公開済み or クイズで焼き上がり */
 function renderGrid(){
-  const list=CHARS.filter(c=>curCat==='すべて'||c.cat===curCat);
-  document.getElementById('grid').innerHTML=list.map(c=>{
-    const un=S.unlocked.includes(c.id);
-    return `<div class="cell ${un?'':'lock'}" data-id="${c.id}">${c.emoji||'🍞'}<span>${un?c.name:'？？？'}</span></div>`;
-  }).join('');
+  let list=CHARS.filter(c=>curCat==='すべて'||c.cat===curCat);
+  if(zukanQ){const q=normFood(zukanQ.trim());list=list.filter(c=>(c.name&&(c.name.includes(q)||q.includes(c.name)))||(c.katagaki||'').includes(zukanQ.trim()));}
+  document.getElementById('grid').innerHTML=list.length?list.map(c=>{
+    return `<div class="cell ${isLit(c)?'':'lock'}" data-id="${c.id}">${c.emoji||'🍞'}<span>${c.name}</span></div>`;
+  }).join(''):'<p style="grid-column:1/-1;font-size:12px;color:var(--brown2);text-align:center;padding:20px 0">その名前の子は、まだ村にいないみたい。</p>';
   document.querySelectorAll('.cell').forEach(el=>el.onclick=()=>openSheet(el.dataset.id));
-  const ready=Object.keys(QUIZ).length;
-  document.getElementById('zsum').textContent=`焼き上がり ${S.unlocked.length}／${CHARS.length} 体（クイズ準備済み ${ready}体・毎日1体ずつ増えるわ）`;
+  const lit=CHARS.filter(isLit).length;
+  document.getElementById('zsum').textContent=`灯っているのは ${lit}／${CHARS.length} 体。物語がNoteで公開されるか、クイズで焼き上がると灯るの。`;
 }
 function openSheet(id){
   const c=CHARS.find(x=>x.id===id); if(!c)return;
-  const un=S.unlocked.includes(id);
+  const un=S.unlocked.includes(id)||!!c.note; /* Note公開済みは最初から読める */
   const sheet=document.getElementById('sheet');
   if(!un){
     sheet.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
-      <span class="face" style="filter:grayscale(1);opacity:.4">${c.emoji||'🍞'}</span>
-      <h3>？？？</h3>
-      <p class="locknote">まだオーブンの中なの。<br>クイズに正解した日に、焼き上がるわ。</p>`;
+      <span class="face" style="filter:grayscale(1);opacity:.45">${c.emoji||'🍞'}</span>
+      <h3>${c.name} モグ子</h3>${c.katagaki?`<p class="kata">${c.katagaki}</p>`:''}
+      <p class="locknote">この子の物語は、いま清書中なの。<br>Noteで公開された日か、クイズで焼き上がった日に、ここが灯るわ。</p>`;
   }else{
     const rows=[['肩書',c.katagaki],['出身',c.origin],['年齢',c.age],['得意技',c.skill],['ライバル',c.rival]]
       .filter(r=>r[1]).map(r=>`<div class="rirekisho"><b>${r[0]}</b><span>${r[1]}</span></div>`).join('');
@@ -724,6 +727,7 @@ function openSheet(id){
   document.getElementById('modal').classList.add('on');
 }
 function closeModal(){document.getElementById('modal').classList.remove('on');}
+document.getElementById('zq').addEventListener('input',e=>{zukanQ=e.target.value;renderGrid();});
 document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')closeModal();};
 
 /* ============ おてがみ（解放翌日ドリップ・1日1通） ============ */
@@ -903,8 +907,9 @@ function renderTable(){
   const logs=todayLogs();
   /* 食卓は縦の4段。入力したものは全部チップで見える化（読点・「と」でおかず単位に分ける） */
   const chip=(txt)=>{
-    const ch=CHARS.find(c=>c.name&&c.name.length>=2&&txt.includes(c.name));
-    return `<span style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(180deg,#fffefb,#fdf3dd);border:1.5px solid var(--gold);border-radius:999px;padding:3px 10px 3px 6px;font-size:12px;font-weight:700;margin:2px 3px 2px 0;animation:pop .3s"><span style="font-size:15px">${ch?ch.emoji:'🍽️'}</span>${txt}</span>`;
+    const ntxt=normFood(txt);
+    const ch=CHARS.find(c=>c.name&&c.name.length>=2&&ntxt.includes(c.name));
+    return `<span data-cid="${ch?ch.id:''}" style="display:inline-flex;align-items:center;gap:4px;background:linear-gradient(180deg,#fffefb,#fdf3dd);border:1.5px solid var(--gold);border-radius:999px;padding:3px 10px 3px 6px;font-size:12px;font-weight:700;margin:2px 3px 2px 0;animation:pop .3s;${ch?'cursor:pointer':''}"><span style="font-size:15px">${ch?ch.emoji:'🍽️'}</span>${txt}</span>`;
   };
   grid.innerHTML=Object.entries(SLOT_INFO).map(([s,ic])=>{
     const items=logs.filter(l=>(l.s||'')===s);
@@ -914,6 +919,8 @@ function renderTable(){
       <div style="flex:1;min-height:30px">${dishes.length?dishes.map(chip).join(''):'<span style="font-size:11.5px;color:var(--brown2);opacity:.6">🪑 まだ空席よ</span>'}</div>
     </div>`;
   }).join('');
+  /* 食卓チップをタップで履歴書へ（うなぎを食べた日に、うなぎの物語へ飛べる） */
+  grid.querySelectorAll('[data-cid]').forEach(el=>{if(el.dataset.cid)el.onclick=()=>openSheet(el.dataset.cid);});
   const oyatsu=logs.filter(l=>l.s==='おやつ').length;
   document.getElementById('tableNote').textContent=oyatsu>=2?pick(OYATSU_LINES,'oy'):'';
   /* スタンプ */
@@ -1121,7 +1128,7 @@ function renderShakeBook(){
   document.getElementById('shakeWeek').innerHTML=wkP.length?`<div class="swk"><div class="swk-h">今週の握手</div>${wkP.map(p=>{
     const key=p.a+'__'+p.b, done=!!S.shake[key];
     const ca=CHARS.find(c=>c.id===p.a)||{}, cb=CHARS.find(c=>c.id===p.b)||{};
-    return `<button class="partner ${done?'done':''}" data-k="${key}"><span class="pf" style="font-size:16px;letter-spacing:-3px">${ca.emoji||'🍞'}${cb.emoji||'🍞'}</span><span class="pt"><span class="pn">${ca.name||''} × ${cb.name||''}${done?' <span style="color:var(--lime-d)">✓ 灯ったわ</span>':''}</span><span class="pe">${p.effect}</span>${p.dish?`<span class="pe" style="color:var(--orange-d);margin-top:3px">🍽️ ${p.dish}</span>`:''}</span><span class="ptag">${emo(p.tag)}</span></button>`;
+    return `<button class="partner ${done?'done':''}" data-k="${key}"><span class="pf" style="font-size:15px">${ca.emoji||'🍞'}${cb.emoji||'🍞'}</span><span class="pt"><span class="pn">${ca.name||''} × ${cb.name||''}${done?' <span style="color:var(--lime-d)">✓ 灯ったわ</span>':''}</span><span class="pe">${p.effect}</span>${p.dish?`<span class="pe" style="color:var(--orange-d);margin-top:3px">🍽️ ${p.dish}</span>`:''}</span><span class="ptag">${emo(p.tag)}</span></button>`;
   }).join('')}</div>`:'';
   /* 勲章別の進捗 */
   document.getElementById('shakeProg').innerHTML=['👁','🧠','💪','🌱'].map(t=>{
