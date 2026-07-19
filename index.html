@@ -160,6 +160,11 @@ footer{padding:28px 18px 10px;font-size:10.5px;color:var(--brown2);text-align:ce
   <!-- きょう -->
   <section class="tab on" id="tab-today">
     <div class="bubble"><img class="ava" id="mogAva" alt="モグ子"><div><div class="who">クロワッサンモグ子</div><div class="btxt" id="greet"></div></div></div>
+    <div class="card" id="todayShakeCard" style="display:none;cursor:pointer" onclick="showTab('kiroku');setTimeout(()=>{const c=document.getElementById('shakeBookCard');if(c)c.scrollIntoView({block:'start',behavior:'smooth'});},200)">
+      <h2>🤝 今週の握手 <span style="font-size:10px;color:var(--brown2);font-weight:700">村の掲示板</span></h2>
+      <div id="todayShakeRow" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"></div>
+      <p style="font-size:11px;color:var(--brown2);margin-top:8px">ふたりが同じ日の食卓にそろうと、握手が灯るの。タップで台紙へ。</p>
+    </div>
     <div class="card" id="shinbunCard" style="display:none;background:linear-gradient(180deg,#fffdf4,#fbf5e2)">
       <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2.5px solid var(--brown);padding-bottom:6px;margin-bottom:10px">
         <b style="font-size:15px;letter-spacing:.12em">ベーカリーヴィル朝刊</b>
@@ -492,11 +497,15 @@ loadData.then(([chars,lt,...qs])=>{
   save();
   document.getElementById('streak').textContent=S.days.length;
   setAva('mogAva','normal'); setAva('mogAva2','normal');
-  renderGreet(); renderShinbun(); renderPostbox(); renderQuiz(); renderCats(); renderGrid(); renderLogs(); renderTable(); renderInvite(); renderShakeBook();
+  renderGreet(); renderShinbun(); renderPostbox(); renderQuiz(); renderCats(); renderGrid(); renderLogs(); renderTable(); renderInvite(); renderShakeBook(); renderTodayShake();
   /* 初回だけ: お近づきのきびだんご（桃太郎と同じ手口） */
   if(!S.gift && S.unlocked.length===0 && CHARS.find(c=>c.id==='kibidango')){
     S.gift=1; S.unlocked.push('kibidango');
-    S.unlockDay=S.unlockDay||{}; S.unlockDay.kibidango=today(); save();
+    S.unlockDay=S.unlockDay||{}; S.unlockDay.kibidango=today();
+    /* 旗のお土産: にんじん×ごま油の握手をひとつ灯しておく（はじめまして体験） */
+    S.shake=S.shake||{};
+    if(!S.shake['ninjin__gomaabura']){S.shake['ninjin__gomaabura']=today(); S.giftShake='ninjin__gomaabura';}
+    save(); renderShakeBook(); renderTodayShake();
     const c=CHARS.find(x=>x.id==='kibidango');
     const sheet=document.getElementById('sheet');
     sheet.innerHTML=`<button class="close" onclick="closeModal();renderGrid();renderQuiz()">✕</button>
@@ -506,6 +515,11 @@ loadData.then(([chars,lt,...qs])=>{
         ${c.thumb?`<img class="art" src="${c.thumb}" onerror="this.outerHTML='<span class=face>🍑</span>'">`:'<span class="face">🍑</span>'}
         <h3>きびだんご モグ子</h3>
         <p style="font-size:12px;color:var(--brown2)">ずかんの最初のひとりになったわ。ここから、あなたの村が始まるの。</p>
+        <div style="margin-top:12px;padding:12px;background:#FDF6E3;border:1.5px dashed var(--orange);border-radius:14px;text-align:left">
+          <b style="font-size:12.5px">🤝 それとね、この村の自慢は「握手」。</b>
+          <p style="font-size:12px;margin-top:4px;line-height:1.8">にんじんは、油と手をつなぐと本気を出すの。そういう根拠のある食べ合わせが、この村では73組も握手してるわ。おみやげに、にんじんさんとごま油さんの握手をひとつ灯しておいたから、見ていってね。</p>
+          <button class="choice" style="text-align:center;margin-top:8px" onclick="closeModal();renderGrid();renderQuiz();showTab('kiroku');setTimeout(()=>{const b=document.getElementById('shakeBookCard');if(b)b.scrollIntoView({block:'start',behavior:'smooth'});},250)">その握手、見てみる</button>
+        </div>
         <button class="big-btn" onclick="closeModal();renderGrid();renderQuiz()">よろしくね</button>
       </div>`;
     document.getElementById('modal').classList.add('on');
@@ -1049,7 +1063,7 @@ document.getElementById('logBtn').onclick=()=>{
   setAva('mogAva2','happy'); setTimeout(()=>setAva('mogAva2','normal'),3000);
   toast(`${SLOT_INFO[curSlot]} ${curSlot}の席に着いたわ ✓`);
   document.getElementById('mealText').value='';
-  renderLogs(); renderTable(); renderInvite(); renderShakeBook();
+  renderLogs(); renderTable(); renderInvite(); renderShakeBook(); renderTodayShake();
 };
 function renderLogs(){
   const el=document.getElementById('logList'); if(!el)return;
@@ -1079,7 +1093,22 @@ fetch('data/shinbun.json').then(r=>r.json()).then(d=>{SHINBUN=window.EMBED_SHINB
 /* ===== 握手（ペア）データ ===== */
 let PAIRS={medal:{},pairs:[]};
 const MEDAL_INFO={'👁':['目にいい','#8FC3DC'],'🧠':['頭にいい','#F39B3B'],'💪':['筋肉にいい','#A9C93F'],'🌱':['心にいい','#F5A8B8']};
-fetch('data/pairs.json').then(r=>r.json()).then(d=>{PAIRS=window.EMBED_PAIRS||d;renderShakeBook();renderInvite();}).catch(()=>{PAIRS=window.EMBED_PAIRS||{medal:{},pairs:[]};renderShakeBook();renderInvite();});
+fetch('data/pairs.json').then(r=>r.json()).then(d=>{PAIRS=window.EMBED_PAIRS||d;renderShakeBook();renderInvite();renderTodayShake();}).catch(()=>{PAIRS=window.EMBED_PAIRS||{medal:{},pairs:[]};renderShakeBook();renderInvite();renderTodayShake();});
+
+/* きょうタブの掲示板: 今週の握手（タップで台紙へ） */
+function renderTodayShake(){
+  const card=document.getElementById('todayShakeCard');
+  if(!card)return;
+  const wkP=(PAIRS.pairs||[]).length?weeklyPairs():[];
+  if(!wkP.length){card.style.display='none';return;}
+  S.shake=S.shake||{};
+  card.style.display='block';
+  document.getElementById('todayShakeRow').innerHTML=wkP.map(p=>{
+    const ca=CHARS.find(c=>c.id===p.a)||{name:p.a}, cb=CHARS.find(c=>c.id===p.b)||{name:p.b};
+    const done=!!S.shake[p.a+'__'+p.b];
+    return `<span style="display:inline-block;border:1.5px ${done?'solid var(--lime)':'dashed var(--line)'};background:${done?'#f4f9e3':'transparent'};border-radius:999px;padding:4px 10px;font-size:11px;font-weight:900;color:${done?'var(--lime-d)':'var(--brown2)'}">${done?'🤝':emo(p.tag)} ${ca.name} × ${cb.name}${done?' ✓':''}</span>`;
+  }).join('');
+}
 function medalsOf(id){return (PAIRS.medal&&PAIRS.medal[id])||[];}
 function partnersOf(id){return (PAIRS.pairs||[]).filter(p=>p.a===id||p.b===id).map(p=>({pid:p.a===id?p.b:p.a,tag:p.tag,effect:p.effect,line:p.line}));}
 /* ===== 握手帳（フェーズ3: ラリー台紙＝全ペア公開・食べたら点灯） ===== */
@@ -1194,7 +1223,7 @@ function openShakeSheet(key){
       <div class="rirekisho" style="margin-top:10px"><b>効果</b><span>${p.effect}</span></div>
       ${p.dish?`<div class="rirekisho"><b>こんな料理で</b><span>🍽️ ${p.dish}</span></div>`:''}
       <div class="rirekisho"><b>ひとこと</b><span>${p.line}</span></div>
-      <div class="rirekisho"><b>はじめて</b><span>${[`${S.shake[key]}、あなたの食卓で。`,`${S.shake[key]}の食卓で、はじめて手をつないだの。`,`${S.shake[key]}。その日のごはんが、きっかけだったのよ。`,`${S.shake[key]}に、あなたが引き合わせてくれたの。`][hash(key+'f')%4]}</span></div>
+      <div class="rirekisho"><b>はじめて</b><span>${key===S.giftShake?`${S.shake[key]}、モグ子からのおみやげ。村に来てくれた記念よ。ここから台紙を埋めていってね。`:[`${S.shake[key]}、あなたの食卓で。`,`${S.shake[key]}の食卓で、はじめて手をつないだの。`,`${S.shake[key]}。その日のごはんが、きっかけだったのよ。`,`${S.shake[key]}に、あなたが引き合わせてくれたの。`][hash(key+'f')%4]}</span></div>
       <div style="display:flex;gap:8px;margin-top:14px">
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.a}')">${ca.emoji||'🍞'} ${ca.name||''}さん</button>
         <button class="choice" style="width:auto;flex:1;text-align:center;margin:0" onclick="openSheet('${p.b}')">${cb.emoji||'🍞'} ${cb.name||''}さん</button>
