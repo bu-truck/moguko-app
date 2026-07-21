@@ -72,6 +72,21 @@ main{padding:0 16px}
 .choice.mood.sel{background:#F4F9E3;border-color:var(--lime);transform:scale(1.03)}
 .next-btn,.big-btn{display:block;width:100%;border:none;border-radius:999px;background:var(--lime);color:#fff;font-size:15px;font-weight:900;letter-spacing:.08em;padding:14px;margin-top:14px;cursor:pointer;box-shadow:0 3px 0 var(--lime-d);transition:.12s;font-family:inherit}
 .next-btn:active,.big-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--lime-d)}
+/* 今夜だれ呼ぶ？: トランプめくり */
+.fanrow{display:flex;gap:8px;margin:4px 0 2px}
+.fcard{flex:1;min-width:0;aspect-ratio:5/7;perspective:600px;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:deal .45s cubic-bezier(.2,1.1,.4,1) backwards}
+.fcard:nth-child(2){animation-delay:.08s}.fcard:nth-child(3){animation-delay:.16s}
+@keyframes deal{from{opacity:0;transform:translateY(14px) rotate(2deg)}to{opacity:1}}
+.fcin{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,1.3,.4,1)}
+.fcard.open .fcin{transform:rotateY(180deg)}
+.fcb,.fcf{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.fcb{background:repeating-linear-gradient(45deg,#F6EDD8 0 8px,#FBF7EE 8px 16px);border:2px solid var(--gold);font-size:26px;color:var(--brown2)}
+.fcb small{font-size:9.5px;font-weight:900;letter-spacing:.1em}
+.fcf{background:var(--card);border:2px solid var(--orange);transform:rotateY(180deg);padding:4px}
+.fcf .fem{font-size:30px;line-height:1.2}
+.fcf b{font-size:11px;text-align:center;line-height:1.3;overflow:hidden;text-overflow:ellipsis;max-width:100%;white-space:nowrap;padding:0 3px}
+.fcf .fadd{border:1.5px solid var(--line);background:var(--cream);border-radius:999px;font-size:10px;font-weight:900;color:var(--brown);padding:4px 8px;cursor:pointer;font-family:inherit}
+.fcf .fadd:disabled{opacity:.6}
 .fun{background:#FBF7EA;border:1.5px dashed var(--gold);border-radius:14px;padding:12px 14px;font-size:13px;margin-top:12px;display:none}
 .fun.on{display:flex;gap:10px;align-items:flex-start;animation:pop .35s ease}
 .progress{display:flex;gap:7px;justify-content:center;margin-bottom:10px}
@@ -1449,17 +1464,26 @@ function renderInvite(){
     if(!bits.length&&c.skill)bits.push('得意技: '+c.skill);
     return bits.length?`<div style="font-size:10.5px;color:var(--lime-d);font-weight:700;margin-top:2px">${bits.join('　')}</div>`:'';
   };
-  document.getElementById('inviteList').innerHTML=cands.map((s,i)=>`
-    <div style="display:flex;gap:10px;align-items:center;padding:9px 4px;border-bottom:1.5px dashed var(--line)">
-      <span style="font-size:26px;flex:none">${s.c.emoji||'🍽️'}</span>
-      <div style="flex:1;min-width:0">
-        <b style="font-size:13.5px">${s.c.name}</b>
-        <div style="font-size:11px;color:var(--brown2)">${reasons[i]}</div>
-        ${goodLine(s.c)}
+  document.getElementById('inviteList').innerHTML=`<div class="fanrow">${cands.map((s,i)=>`
+    <div class="fcard" data-i="${i}">
+      <div class="fcin">
+        <div class="fcb">🥐<small>めくってね</small></div>
+        <div class="fcf"><span class="fem">${s.c.emoji||'🍽️'}</span><b>${s.c.name}</b><button class="fadd" data-add="${s.c.name}">🧺 メモへ</button></div>
       </div>
-      <button class="choice" style="flex:none;width:auto;margin:0;padding:7px 12px;font-size:12px;white-space:nowrap" data-add="${s.c.name}">🧺 メモへ</button>
-    </div>`).join('');
-  card.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{
+    </div>`).join('')}</div>
+    <div id="inviteReason" class="fun" style="margin-top:10px"></div>`;
+  const showReason=(i)=>{
+    const el=document.getElementById('inviteReason');
+    el.innerHTML=`<div><b style="font-size:12.5px">${cands[i].c.name}</b><div style="font-size:11.5px;color:var(--brown2);margin-top:2px">${reasons[i]}</div>${goodLine(cands[i].c)}</div>`;
+    el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+  };
+  card.querySelectorAll('.fcard').forEach(fc=>fc.onclick=(ev)=>{
+    if(ev.target.dataset&&ev.target.dataset.add)return;
+    if(!fc.classList.contains('open')){fc.classList.add('open');setTimeout(()=>showReason(+fc.dataset.i),320);}
+    else showReason(+fc.dataset.i);
+  });
+  card.querySelectorAll('[data-add]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
     const n=b.dataset.add;
     if(!S.shop.includes(n)){S.shop.push(n);save();}
     b.textContent='✓ 入れたわ'; b.disabled=true;
