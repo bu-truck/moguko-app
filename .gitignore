@@ -1,0 +1,6 @@
+# このリポジトリは公開（GitHub Pages）。アプリ本体だけを置く。
+# 戦略・裁定・記録・下書きなどの文書は非公開の moguko-docs で管理する。
+*.md
+*.zip
+drafts/
+.DS_Store
